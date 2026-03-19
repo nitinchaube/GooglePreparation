@@ -1,0 +1,1976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Google Interview Prep — 30 Day Tracker</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #1c2333;
+    --border: #30363d;
+    --text: #e6edf3;
+    --text-muted: #8b949e;
+    --accent: #58a6ff;
+    --green: #3fb950;
+    --yellow: #d29922;
+    --red: #f85149;
+    --purple: #bc8cff;
+    --orange: #f0883e;
+    --pink: #f778ba;
+    --cyan: #39d2c0;
+    --coding: #58a6ff;
+    --srs: #bc8cff;
+    --portfolio: #f0883e;
+    --sysdesign: #3fb950;
+    --behavioral: #f778ba;
+    --retro: #39d2c0;
+    --radius: 12px;
+    --shadow: 0 2px 12px rgba(0,0,0,.4);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  .app { max-width: 1100px; margin: 0 auto; padding: 24px 20px 80px; }
+
+  /* Header */
+  .header {
+    text-align: center;
+    padding: 40px 0 32px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 32px;
+  }
+  .header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--accent), var(--purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 6px;
+  }
+  .header p { color: var(--text-muted); font-size: .95rem; }
+
+  /* Overall Progress */
+  .overall-progress {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 28px;
+    box-shadow: var(--shadow);
+  }
+  .overall-progress h2 { font-size: 1.1rem; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .stat-card {
+    background: var(--surface2);
+    border-radius: 10px;
+    padding: 16px;
+    text-align: center;
+  }
+  .stat-card .number {
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .stat-card .label { font-size: .8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: .5px; }
+  .progress-bar-container {
+    background: var(--surface2);
+    border-radius: 20px;
+    height: 28px;
+    overflow: hidden;
+    position: relative;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    border-radius: 20px;
+    background: linear-gradient(90deg, var(--accent), var(--purple));
+    transition: width .5s ease;
+    position: relative;
+  }
+  .progress-bar-text {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: .8rem;
+    font-weight: 600;
+    color: #fff;
+    text-shadow: 0 1px 3px rgba(0,0,0,.5);
+  }
+
+  /* Phase Tabs */
+  .phase-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .phase-tab {
+    padding: 10px 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: .9rem;
+    color: var(--text-muted);
+    transition: all .2s;
+    font-weight: 500;
+    user-select: none;
+  }
+  .phase-tab:hover { border-color: var(--accent); color: var(--text); }
+  .phase-tab.active {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+  .phase-tab .tab-progress {
+    font-size: .75rem;
+    opacity: .8;
+    margin-left: 6px;
+  }
+
+  /* Day Card */
+  .day-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 12px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    transition: border-color .2s;
+  }
+  .day-card:hover { border-color: #484f58; }
+  .day-card.completed { border-left: 4px solid var(--green); }
+
+  .day-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    cursor: pointer;
+    user-select: none;
+    transition: background .15s;
+  }
+  .day-header:hover { background: rgba(255,255,255,.02); }
+  .day-header-left { display: flex; align-items: center; gap: 14px; flex: 1; min-width: 0; }
+  .day-number {
+    background: var(--surface2);
+    border-radius: 8px;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+  .day-card.completed .day-number { background: var(--green); color: #fff; }
+  .day-title-area { min-width: 0; }
+  .day-title { font-weight: 600; font-size: 1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .day-subtitle { font-size: .8rem; color: var(--text-muted); }
+  .day-header-right { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+  .day-progress-mini {
+    width: 100px;
+    height: 6px;
+    background: var(--surface2);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .day-progress-mini-fill { height: 100%; background: var(--accent); border-radius: 4px; transition: width .3s; }
+  .day-progress-label { font-size: .8rem; color: var(--text-muted); min-width: 42px; text-align: right; }
+  .chevron {
+    transition: transform .2s;
+    color: var(--text-muted);
+    font-size: 1.2rem;
+  }
+  .day-card.open .chevron { transform: rotate(180deg); }
+
+  .day-body { display: none; border-top: 1px solid var(--border); }
+  .day-card.open .day-body { display: block; }
+
+  /* Category Section */
+  .category {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .category:last-child { border-bottom: none; }
+  .category-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .category-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .category-name { font-weight: 600; font-size: .9rem; }
+  .category-time { font-size: .78rem; color: var(--text-muted); margin-left: auto; }
+  .category-progress-text { font-size: .78rem; color: var(--text-muted); }
+
+  /* Task Item */
+  .task {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 7px 0 7px 20px;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background .1s;
+  }
+  .task:hover { background: rgba(255,255,255,.02); }
+  .task input[type="checkbox"] { display: none; }
+  .task .checkmark {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--border);
+    border-radius: 5px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all .2s;
+    margin-top: 1px;
+    cursor: pointer;
+  }
+  .task .checkmark svg { opacity: 0; transition: opacity .15s; width: 12px; height: 12px; }
+  .task.checked .checkmark {
+    background: var(--green);
+    border-color: var(--green);
+  }
+  .task.checked .checkmark svg { opacity: 1; }
+  .task.checked .task-text { color: var(--text-muted); text-decoration: line-through; text-decoration-color: rgba(139,148,158,.4); }
+  .task-text { font-size: .88rem; line-height: 1.5; }
+  .task-text code {
+    background: var(--surface2);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: .82rem;
+  }
+  .subtask { padding-left: 30px; }
+  .subtask .checkmark { width: 17px; height: 17px; border-radius: 4px; }
+  .subtask .task-text { font-size: .84rem; }
+
+  .tag {
+    display: inline-block;
+    padding: 1px 7px;
+    border-radius: 4px;
+    font-size: .72rem;
+    font-weight: 600;
+    letter-spacing: .3px;
+    vertical-align: middle;
+  }
+  .tag-google { background: rgba(88,166,255,.15); color: var(--accent); }
+  .tag-classic { background: rgba(240,136,62,.15); color: var(--orange); }
+  .tag-hard { background: rgba(248,81,73,.15); color: var(--red); }
+  .tag-easy { background: rgba(63,185,80,.15); color: var(--green); }
+  .tag-medium { background: rgba(210,153,34,.15); color: var(--yellow); }
+
+  /* Legend */
+  .legend {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    padding: 12px 16px;
+    background: var(--surface);
+    border-radius: 10px;
+    border: 1px solid var(--border);
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: .82rem; color: var(--text-muted); }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+  /* Toolbar */
+  .toolbar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .toolbar input[type="text"] {
+    flex: 1;
+    min-width: 200px;
+    padding: 10px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    font-size: .9rem;
+    outline: none;
+    transition: border-color .2s;
+  }
+  .toolbar input[type="text"]:focus { border-color: var(--accent); }
+  .toolbar input[type="text"]::placeholder { color: var(--text-muted); }
+
+  .btn {
+    padding: 10px 18px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: .85rem;
+    font-weight: 500;
+    transition: all .2s;
+    white-space: nowrap;
+  }
+  .btn:hover { background: var(--surface2); border-color: #484f58; }
+  .btn-danger { border-color: var(--red); color: var(--red); }
+  .btn-danger:hover { background: rgba(248,81,73,.1); }
+  .btn-success { border-color: var(--green); color: var(--green); }
+  .btn-success:hover { background: rgba(63,185,80,.1); }
+
+  /* Retro section */
+  .retro-section { padding: 16px 20px; background: var(--surface2); }
+  .retro-section h4 { font-size: .85rem; color: var(--cyan); margin-bottom: 10px; }
+  .retro-textarea {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px;
+    color: var(--text);
+    font-family: inherit;
+    font-size: .85rem;
+    resize: vertical;
+    min-height: 60px;
+    outline: none;
+    margin-bottom: 8px;
+  }
+  .retro-textarea:focus { border-color: var(--accent); }
+  .retro-textarea::placeholder { color: var(--text-muted); }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--green);
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-size: .9rem;
+    font-weight: 500;
+    box-shadow: 0 4px 20px rgba(0,0,0,.5);
+    transform: translateY(80px);
+    opacity: 0;
+    transition: all .3s;
+    z-index: 100;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  /* File warning banner */
+  .file-warning {
+    background: linear-gradient(135deg, rgba(210,153,34,.15), rgba(248,81,73,.1));
+    border: 1px solid var(--yellow);
+    border-radius: var(--radius);
+    padding: 14px 20px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    font-size: .88rem;
+  }
+  .file-warning code {
+    background: var(--surface2);
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: .82rem;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    transition: border-color .2s;
+  }
+  .file-warning code:hover { border-color: var(--accent); }
+  .file-warning .warn-icon { font-size: 1.3rem; }
+  .file-warning .dismiss-btn {
+    margin-left: auto;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 1.1rem;
+  }
+
+  /* Streak banner */
+  .streak-banner {
+    background: linear-gradient(135deg, rgba(88,166,255,.1), rgba(188,140,255,.1));
+    border: 1px solid rgba(88,166,255,.2);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .streak-left { display: flex; align-items: center; gap: 12px; }
+  .streak-fire { font-size: 2rem; }
+  .streak-text { font-weight: 600; font-size: 1.1rem; }
+  .streak-sub { font-size: .8rem; color: var(--text-muted); }
+
+  /* Responsive */
+  @media (max-width: 640px) {
+    .app { padding: 12px 10px 60px; }
+    .header h1 { font-size: 1.4rem; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .day-progress-mini { display: none; }
+    .phase-tab { padding: 8px 14px; font-size: .82rem; }
+  }
+
+  /* Print */
+  @media print {
+    body { background: #fff; color: #000; }
+    .toolbar, .phase-tabs, .btn, .toast, .streak-banner { display: none !important; }
+    .day-body { display: block !important; }
+    .day-card, .overall-progress, .category { border-color: #ccc; background: #fff; }
+    .task.checked .task-text { text-decoration: line-through; }
+  }
+
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<div class="app" id="app">
+  <div class="header">
+    <h1>Google Interview Prep</h1>
+    <p>30-Day Master Plan &mdash; Daily Tracker</p>
+  </div>
+
+  <div class="file-warning" id="fileWarning" style="display:none">
+    <span class="warn-icon">&#9888;&#65039;</span>
+    <span>You're running from a local file. For <strong>reliable auto-save</strong>, run this in your terminal, then open <a href="http://localhost:3000/tracker.html" style="color:var(--accent)">localhost:3000</a>:</span>
+    <code id="serverCmd" title="Click to copy">python3 -m http.server 3000</code>
+    <span style="font-size:.78rem;color:var(--text-muted)">(click to copy)</span>
+    <button class="dismiss-btn" id="dismissWarning" title="Dismiss">&times;</button>
+  </div>
+
+  <div class="streak-banner" id="streakBanner">
+    <div class="streak-left">
+      <div class="streak-fire">&#128293;</div>
+      <div>
+        <div class="streak-text" id="streakText">Day 0 of 30</div>
+        <div class="streak-sub" id="streakSub">Start checking off tasks to build your streak</div>
+      </div>
+    </div>
+    <div style="font-size:.85rem;color:var(--text-muted)" id="streakDate"></div>
+  </div>
+
+  <div class="overall-progress" id="overallProgress">
+    <h2>&#128200; Overall Progress</h2>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="number" style="color:var(--green)" id="statCompleted">0</div>
+        <div class="label">Tasks Done</div>
+      </div>
+      <div class="stat-card">
+        <div class="number" style="color:var(--accent)" id="statTotal">0</div>
+        <div class="label">Total Tasks</div>
+      </div>
+      <div class="stat-card">
+        <div class="number" style="color:var(--yellow)" id="statDaysCompleted">0</div>
+        <div class="label">Days Completed</div>
+      </div>
+      <div class="stat-card">
+        <div class="number" style="color:var(--purple)" id="statProblems">0</div>
+        <div class="label">LC Problems Done</div>
+      </div>
+    </div>
+    <div class="progress-bar-container">
+      <div class="progress-bar-fill" id="overallBar" style="width:0%">
+        <span class="progress-bar-text" id="overallBarText">0%</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--coding)"></div> Coding</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--srs)"></div> Spaced Repetition</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--portfolio)"></div> Portfolio / ADK</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--sysdesign)"></div> System Design</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--behavioral)"></div> Behavioral</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--retro)"></div> Retro / Checkpoint</div>
+  </div>
+
+  <div class="toolbar">
+    <input type="text" id="searchInput" placeholder="Search tasks, problems, or topics...">
+    <button class="btn" id="expandAllBtn">Expand All</button>
+    <button class="btn" id="collapseAllBtn">Collapse All</button>
+    <button class="btn btn-success" id="exportBtn">Export</button>
+    <button class="btn" id="importBtn">Import</button>
+    <input type="file" id="importFile" accept=".json" style="display:none">
+    <button class="btn btn-danger" id="resetBtn">Reset All</button>
+  </div>
+
+  <div class="phase-tabs" id="phaseTabs"></div>
+
+  <div id="daysContainer"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const DATA = buildPlanData();
+
+const STORAGE_KEY = 'google_prep_v2';
+const DB_NAME = 'GooglePrepTracker';
+const DB_STORE = 'state';
+let state = { checked: {}, notes: {} };
+let db = null;
+let saveTimer = null;
+
+function openDB() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(DB_NAME, 1);
+    req.onupgradeneeded = (e) => { e.target.result.createObjectStore(DB_STORE); };
+    req.onsuccess = (e) => { db = e.target.result; resolve(db); };
+    req.onerror = () => resolve(null);
+  });
+}
+
+function idbGet(key) {
+  return new Promise((resolve) => {
+    if (!db) { resolve(null); return; }
+    try {
+      const tx = db.transaction(DB_STORE, 'readonly');
+      const req = tx.objectStore(DB_STORE).get(key);
+      req.onsuccess = () => resolve(req.result || null);
+      req.onerror = () => resolve(null);
+    } catch { resolve(null); }
+  });
+}
+
+function idbSet(key, val) {
+  return new Promise((resolve) => {
+    if (!db) { resolve(); return; }
+    try {
+      const tx = db.transaction(DB_STORE, 'readwrite');
+      tx.objectStore(DB_STORE).put(val, key);
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => resolve();
+    } catch { resolve(); }
+  });
+}
+
+async function loadState() {
+  let loaded = null;
+  try { await openDB(); } catch {}
+  if (db) {
+    try { loaded = await idbGet(STORAGE_KEY); } catch {}
+  }
+  if (!loaded) {
+    try {
+      const s = localStorage.getItem(STORAGE_KEY);
+      if (s) loaded = JSON.parse(s);
+    } catch {}
+  }
+  return loaded && loaded.checked ? loaded : { checked: {}, notes: {} };
+}
+
+function saveState() {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(_doSave, 150);
+}
+
+function _doSave() {
+  const json = JSON.stringify(state);
+  try { localStorage.setItem(STORAGE_KEY, json); } catch {}
+  idbSet(STORAGE_KEY, state);
+}
+
+function buildPlanData() {
+  const phases = [
+    { id: 'phase1', name: 'Phase 1: Foundation & Memory Banks', days: [] },
+    { id: 'phase2', name: 'Phase 2: Graphs, Trees & Concurrency', days: [] },
+    { id: 'phase3', name: 'Phase 3: DP, Security & Complex Systems', days: [] },
+    { id: 'phase4', name: 'Phase 4: Mock Loops & Final Polish', days: [] }
+  ];
+
+  // PHASE 1 — Days 1-7
+  phases[0].days = [
+    { day:1, title:'Arrays & Hashing Fundamentals', subtitle:'HashMap, frequency counting, bucket sort', categories:[
+      { name:'Coding', color:'coding', time:'08:00-10:30', tasks:[
+        {t:'Review Arrays and HashMap pattern sheets (NeetCode / Grind 75)',sub:false},
+        {t:'<strong>Two Sum</strong> (LC #1) — HashMap pattern <span class="tag tag-easy">EASY</span>',sub:false,lc:true},
+        {t:'<strong>Contains Duplicate</strong> (LC #217) — Set usage <span class="tag tag-easy">EASY</span>',sub:false,lc:true},
+        {t:'<strong>Valid Anagram</strong> (LC #242) — Frequency counting <span class="tag tag-easy">EASY</span>',sub:false,lc:true},
+        {t:'<strong>Group Anagrams</strong> (LC #49) — Sorted-key HashMap <span class="tag tag-google">GOOGLE</span>',sub:false,lc:true},
+        {t:'<strong>Top K Frequent Elements</strong> (LC #347) — Bucket sort <span class="tag tag-google">GOOGLE</span>',sub:false,lc:true},
+        {t:'Write pattern name, T/S complexity, and 1 edge case for each problem',sub:false},
+        {t:'Concurrency: What is a thread vs process? What is the GIL?',sub:false},
+        {t:'Write program that spawns 3 threads printing numbers 1-10',sub:false},
+      ]},
+      { name:'Spaced Repetition', color:'srs', time:'10:45-11:45', tasks:[
+        {t:'Create card: "Steps to solve Two Sum" → HashMap, single pass, complement',sub:false},
+        {t:'Create card: "HashMap operations complexity" → O(1) avg, O(n) worst',sub:false},
+        {t:'Create card: "When sorting vs HashMap" → decision criteria',sub:false},
+        {t:'Create card: "Bucket sort trick for Top K" → O(n) vs O(n log k)',sub:false},
+        {t:'Review any prior Anki cards',sub:false},
+      ]},
+      { name:'Portfolio / ADK', color:'portfolio', time:'11:45-01:30', tasks:[
+        {t:'Install Python 3.11+ and set up virtual environment',sub:false},
+        {t:'<code>pip install google-adk</code>',sub:false},
+        {t:'Create project structure: agents/, tools/, tests/, README',sub:false},
+        {t:'Build basic <code>SequentialAgent</code> (query → tool → response)',sub:false},
+        {t:'Commit to GitHub with clean commit message',sub:false},
+      ]},
+      { name:'System Design', color:'sysdesign', time:'02:30-05:00', tasks:[
+        {t:'Estimation: "QPS for Google Search?" → ~100K QPS',sub:false},
+        {t:'Estimation: "Storage for 1B 768-dim embeddings?" → ~3 TB',sub:false},
+        {t:'Memorize: 1M sec ≈ 11.5 days, 1B sec ≈ 31.7 years',sub:false},
+        {t:'Study Vector Databases: what problem they solve',sub:false},
+        {t:'Study HNSW index: how it differs from brute-force kNN',sub:false},
+        {t:'Compare: Semantic search vs Keyword search vs Hybrid',sub:false},
+        {t:'Draw semantic search system architecture on paper',sub:false},
+      ]},
+      { name:'Behavioral', color:'behavioral', time:'05:15-06:15', tasks:[
+        {t:'Draft STAR #1: "Operational Automation at TIAA" with quantified results',sub:false},
+        {t:'Draft STAR #2: "Audit Compliance System" — regulatory constraints',sub:false},
+        {t:'Googleyness: Write 1 time you helped a teammate grow',sub:false},
+      ]},
+      { name:'Daily Retro', color:'retro', time:'06:15-06:30', tasks:[
+        {t:'Write 3 things learned today',sub:false,retro:true},
+        {t:'Write 1 thing struggled with',sub:false,retro:true},
+        {t:'Write tomorrow\'s #1 priority',sub:false,retro:true},
+      ]},
+    ]},
+    { day:2, title:'Two Pointers & Sliding Window', subtitle:'Sorted arrays, window management, Kadane\'s', categories:[
+      { name:'Coding', color:'coding', time:'08:00-10:30', tasks:[
+        {t:'Study Two-Pointer and Sliding Window pattern templates',sub:false},
+        {t:'<strong>Valid Palindrome</strong> (LC #125) — Two pointers <span class="tag tag-easy">EASY</span>',sub:false,lc:true},
+        {t:'<strong>3Sum</strong> (LC #15) — Sort + two pointers <span class="tag tag-google">GOOGLE</span>',sub:false,lc:true},
+        {t:'<strong>Container With Most Water</strong> (LC #11) — Greedy <span class="tag tag-medium">MED</span>',sub:false,lc:true},
+        {t:'<strong>Best Time to Buy/Sell Stock</strong> (LC #121) — Kadane\'s <span class="tag tag-easy">EASY</span>',sub:false,lc:true},
+        {t:'<strong>Longest Substring Without Repeating</strong> (LC #3) — Sliding window <span class="tag tag-google">GOOGLE</span>',sub:false,lc:true},
+        {t:'Concurrency: Write code that demonstrates a race condition',sub:false},
+        {t:'Concurrency: Fix the race condition using <code>threading.Lock()</code>',sub:false},
+      ]},
+      { name:'Spaced Repetition', color:'srs', time:'10:45-11:45', tasks:[
+        {t:'Card: "Two-pointer template" → sorted array, left=0 right=n-1',sub:false},
+        {t:'Card: "Sliding window template" → expand right, shrink left',sub:false},
+        {t:'Card: "Handle duplicates in 3Sum" → skip while nums[i]==nums[i-1]',sub:false},
+        {t:'Card: "Kadane\'s algorithm" → max(num, max_ending_here + num)',sub:false},
+        {t:'Review all Day 1 cards',sub:false},
+      ]},
+      { name:'Portfolio / ADK', color:'portfolio', time:'11:45-01:30', tasks:[
+        {t:'Implement Vertex AI Memory Bank (<code>CreateMemory</code>)',sub:false},
+        {t:'Test: ask follow-up question that requires memory',sub:false},
+        {t:'Verify memory persists across sessions',sub:false},
+        {t:'Write unit tests for agent functionality',sub:false},
+        {t:'Push to GitHub',sub:false},
+      ]},
+      { name:'System Design', color:'sysdesign', time:'02:30-05:00', tasks:[
+        {t:'Estimation: "YouTube video metadata storage for 800M videos?"',sub:false},
+        {t:'Estimation: "Bandwidth for 1080p to 1M concurrent users?"',sub:false},
+        {t:'Study ANN algorithms: LSH and Product Quantization',sub:false},
+        {t:'Study Google ScaNN: sub-ms search on billions of vectors',sub:false},
+        {t:'Whiteboard: "Similar Images" for Google Photos',sub:false},
+      ]},
+      { name:'Behavioral', color:'behavioral', time:'05:15-06:15', tasks:[
+        {t:'Draft STAR #3: "Production Incident" with Splunk/Dynatrace details',sub:false},
+        {t:'Practice Story #1 out loud — under 2 minutes',sub:false},
+        {t:'Googleyness: 1 time you disagreed but committed',sub:false},
+      ]},
+      { name:'Daily Retro', color:'retro', time:'06:15-06:30', tasks:[
+        {t:'Write 3 things learned today',sub:false,retro:true},
+        {t:'Write 1 thing struggled with',sub:false,retro:true},
+        {t:'Write tomorrow\'s #1 priority',sub:false,retro:true},
+      ]},
+    ]},
+    { day:3, title:'Strings & Advanced Hashing', subtitle:'Palindromes, encoding, minimum window', categories:[
+      { name:'Coding', color:'coding', time:'08:00-10:30', tasks:[
+        {t:'<strong>Longest Palindromic Substring</strong> (LC #5) — Expand around center <span class="tag tag-google">GOOGLE</span>',sub:false,lc:true},
+        {t:'<strong>Palindromic Substrings</strong> (LC #647) — Count all <span class="tag tag-medium">MED</span>',sub:false,lc:true},
+        {t:'<strong>Encode and Decode Strings</strong> (LC #271) — Serialization <span class="tag tag-google">GOOGLE</span>',sub:false,lc:true},
+        {t:'<strong>Minimum Window Substring</strong> (LC #76) — Hard sliding window <span class="tag tag-google">GOOGLE</span> <span class="tag tag-hard">HARD</span>',sub:false,lc:true},
+        {t:'<strong>Longest Repeating Char Replacement</strong> (LC #424) <span class="tag tag-medium">MED</span>',sub:false,lc:true},
+        {t:'Write "shrinkable sliding window" template',sub:false},
+        {t:'Concurrency: What is a deadlock? Draw diagram of two threads deadlocking',sub:false},
+        {t:'Learn: lock ordering as deadlock prevention',sub:false},
+      ]},
+      { name:'Spaced Repetition', color:'srs', time:'10:45-11:45', tasks:[
+        {t:'Card: "Expand around center" → O(n²) time, O(1) space',sub:false},
+        {t:'Card: "Min Window Substring template" → two pointers + need/have',sub:false},
+        {t:'Card: "String encoding trick" → length + delimiter + string',sub:false},
+        {t:'Card: "Deadlock conditions" → mutual exclusion, hold&wait, no preempt, circular wait',sub:false},
+        {t:'Review all scheduled cards from Days 1-2',sub:false},
+      ]},
+      { name:'Portfolio / ADK', color:'portfolio', time:'11:45-01:30', tasks:[
+        {t:'Add second tool to agent (weather API or DB query)',sub:false},
+        {t:'Implement tool selection logic based on user intent',sub:false},
+        {t:'Add clear docstrings to every function',sub:false},
+        {t:'Push to GitHub',sub:false},
+      ]},
+      { name:'System Design', color:'sysdesign', time:'02:30-05:00', tasks:[
+        {t:'Estimation: "Machines to serve 70B param model?" → 140GB FP16, multiple A100s',sub:false},
+        {t:'Study RAG architecture end-to-end: ingest → chunk → embed → retrieve → generate',sub:false},
+        {t:'Study chunking strategies: fixed-size, sentence, recursive',sub:false},
+        {t:'Understand "Lost in the Middle" problem',sub:false},
+        {t:'Whiteboard: Customer support chatbot using RAG',sub:false},
+      ]},
+      { name:'Behavioral', color:'behavioral', time:'05:15-06:15', tasks:[
+        {t:'Tighten Stories #1-3: cut any sentence that doesn\'t add value',sub:false},
+        {t:'Record Story #2 and listen back',sub:false},
+        {t:'Googleyness: time you went beyond your job description',sub:false},
+      ]},
+      { name:'Daily Retro', color:'retro', time:'06:15-06:30', tasks:[
+        {t:'Write 3 things learned today',sub:false,retro:true},
+        {t:'Write 1 thing struggled with',sub:false,retro:true},
+        {t:'Write tomorrow\'s #1 priority',sub:false,retro:true},
+      ]},
+    ]},
+    { day:4, title:'Stacks, Queues & Monotonic Patterns', subtitle:'Monotonic stack, histogram, thread-safe stack', categories:[
+      { name:'Coding', color:'coding', time:'08:00-10:30', tasks:[
+        {t:'<strong>Valid Parentheses</strong> (LC #20) — Basic stack <span class="tag tag-easy">EASY</span>',sub:false,lc:true},
+        {t:'<strong>Min Stack</strong> (LC #155) — Stack design <span class="tag tag-medium">MED</span>',sub:false,lc:true},
+        {t:'<strong>Daily Temperatures</strong> (LC #739) — Monotonic stack <span class="tag tag-google">GOOGLE</span>',sub:false,lc:true},
+        {t:'<strong>Next Greater Element I</strong> (LC #496) — Monotonic + HashMap <span class="tag tag-easy">EASY</span>',sub:false,lc:true},
+        {t:'<strong>Largest Rectangle in Histogram</strong> (LC #84) — Monotonic stack <span class="tag tag-classic">CLASSIC</span> <span class="tag tag-hard">HARD</span>',sub:false,lc:true},
+        {t:'Write monotonic stack template (increasing vs decreasing)',sub:false},
+        {t:'Implement thread-safe stack using <code>threading.Lock()</code>',sub:false},
+        {t:'Test with 4 threads doing push/pop concurrently',sub:false},
+      ]},
+      { name:'Spaced Repetition', color:'srs', time:'10:45-11:45', tasks:[
+        {t:'Card: "Monotonic stack — when to use" → next greater/smaller problems',sub:false},
+        {t:'Card: "Monotonic increasing vs decreasing"',sub:false},
+        {t:'Card: "Largest Rectangle approach" → stack of indices, calc width on pop',sub:false},
+        {t:'Card: "Thread-safe pattern" → acquire lock → operate → release',sub:false},
+        {t:'Review all scheduled cards',sub:false},
+      ]},
+      { name:'Portfolio / ADK', color:'portfolio', time:'11:45-01:30', tasks:[
+        {t:'Study <code>LlmAgent</code> configuration from O\'Reilly book',sub:false},
+        {t:'Experiment with different system prompts',sub:false},
+        {t:'Implement input/output schema validation',sub:false},
+        {t:'Add error handling (what happens when tool fails?)',sub:false},
+        {t:'Push to GitHub',sub:false},
+      ]},
+      { name:'System Design', color:'sysdesign', time:'02:30-05:00', tasks:[
+        {t:'Estimation: "Gmail storage?" → 1.8B users × 15GB = 27 exabytes',sub:false},
+        {t:'Study GFS/Colossus: distributed file system',sub:false},
+        {t:'Study Bigtable: wide-column store, row key design',sub:false},
+        {t:'Study Spanner: globally distributed SQL, TrueTime',sub:false},
+        {t:'Whiteboard: URL shortener (TinyURL)',sub:false},
+      ]},
+      { name:'Behavioral', color:'behavioral', time:'05:15-06:15', tasks:[
+        {t:'Draft STAR #4: "Learning New Tech Under Time Pressure"',sub:false},
+        {t:'Practice Stories #1 and #3 out loud',sub:false},
+        {t:'Googleyness: prepare your "Why Google?" answer (specific, not generic)',sub:false},
+      ]},
+      { name:'Daily Retro', color:'retro', time:'06:15-06:30', tasks:[
+        {t:'Write 3 things learned today',sub:false,retro:true},
+        {t:'Write 1 thing struggled with',sub:false,retro:true},
+        {t:'Write tomorrow\'s #1 priority',sub:false,retro:true},
+      ]},
+    ]},
+    { day:5, title:'Binary Search Mastery', subtitle:'3 templates, search on answer, median of two arrays', categories:[
+      { name:'Coding', color:'coding', time:'08:00-10:30', tasks:[
+        {t:'<strong>Binary Search</strong> (LC #704) — Pure template <span class="tag tag-easy">EASY</span>',sub:false,lc:true},
+        {t:'<strong>Search a 2D Matrix</strong> (LC #74) — Flatten conceptually <span class="tag tag-google">GOOGLE</span>',sub:false,lc:true},
+        {t:'<strong>Koko Eating Bananas</strong> (LC #875) — Binary search on answer <span class="tag tag-google">GOOGLE</span>',sub:false,lc:true},
+        {t:'<strong>Find Min in Rotated Sorted Array</strong> (LC #153) <span class="tag tag-medium">MED</span>',sub:false,lc:true},
+        {t:'<strong>Median of Two Sorted Arrays</strong> (LC #4) — L5 problem <span class="tag tag-google">GOOGLE</span> <span class="tag tag-hard">HARD</span>',sub:false,lc:true},
+        {t:'Write 3 BS templates: exact, lower bound, upper bound',sub:false},
+        {t:'Concurrency: <code>threading.Condition()</code> — wait/notify',sub:false},
+      ]},
+      { name:'Spaced Repetition', color:'srs', time:'10:45-11:45', tasks:[
+        {t:'Card: "Binary search on answer space" → monotonic answer, BS the answer',sub:false},
+        {t:'Card: "Lower bound template"',sub:false},
+        {t:'Card: "Rotated array BS" → compare mid with right',sub:false},
+        {t:'Card: "Median two arrays" → BS on shorter array, partition both',sub:false},
+        {t:'Review all scheduled cards',sub:false},
+      ]},
+      { name:'Portfolio / ADK', color:'portfolio', time:'11:45-01:30', tasks:[
+        {t:'Build tool that queries a real API (Google Books, Wikipedia)',sub:false},
+        {t:'Integrate into agent',sub:false},
+        {t:'Test with 5 different queries — verify correct tool selection',sub:false},
+        {t:'Push to GitHub',sub:false},
+      ]},
+      { name:'System Design', color:'sysdesign', time:'02:30-05:00', tasks:[
+        {t:'Estimation: "Storage for Google Maps road network?"',sub:false},
+        {t:'Estimation: "Cache servers for CDN, 10M req/sec?"',sub:false},
+        {t:'Study MapReduce: Map → Shuffle → Reduce, limitations',sub:false},
+        {t:'Study Pub/Sub: at-least-once vs exactly-once delivery',sub:false},
+        {t:'Whiteboard: Web crawler for Google Search',sub:false},
+      ]},
+      { name:'Behavioral', color:'behavioral', time:'05:15-06:15', tasks:[
+        {t:'Draft STAR #5: "Cross-Team Collaboration"',sub:false},
+        {t:'Rapid-fire: 2-min timer per story for Stories #1-4',sub:false},
+        {t:'Googleyness: "time you simplified something complex"',sub:false},
+      ]},
+      { name:'Daily Retro', color:'retro', time:'06:15-06:30', tasks:[
+        {t:'Write 3 things learned today',sub:false,retro:true},
+        {t:'Write 1 thing struggled with',sub:false,retro:true},
+        {t:'Write tomorrow\'s #1 priority',sub:false,retro:true},
+      ]},
+    ]},
+    { day:6, title:'Linked Lists & Fast/Slow Pointers', subtitle:'Floyd\'s, LRU Cache, merge K lists', categories:[
+      { name:'Coding', color:'coding', time:'08:00-10:30', tasks:[
+        {t:'<strong>Reverse Linked List</strong> (LC #206) — Iterative AND recursive <span class="tag tag-easy">EASY</span>',sub:false,lc:true},
+        {t:'<strong>Merge Two Sorted Lists</strong> (LC #21) — Dummy head <span class="tag tag-easy">EASY</span>',sub:false,lc:true},
+        {t:'<strong>Linked List Cycle</strong> (LC #141) — Floyd\'s algorithm <span class="tag tag-easy">EASY</span>',sub:false,lc:true},
+        {t:'<strong>LRU Cache</strong> (LC #146) — HashMap + DLL <span class="tag tag-classic">CLASSIC</span>',sub:false,lc:true},
+        {t:'<strong>Merge K Sorted Lists</strong> (LC #23) — Heap / D&C <span class="tag tag-google">GOOGLE</span> <span class="tag tag-hard">HARD</span>',sub:false,lc:true},
+        {t:'Implement LRU Cache again from memory (no notes)',sub:false},
+        {t:'Implement thread-safe LRU Cache (minimize critical section)',sub:false},
+      ]},
+      { name:'Spaced Repetition', color:'srs', time:'10:45-11:45', tasks:[
+        {t:'Card: "Floyd\'s cycle detection" → slow 1, fast 2',sub:false},
+        {t:'Card: "LRU Cache internals" → HashMap + DLL',sub:false},
+        {t:'Card: "Merge K sorted lists" → O(N log K) with min-heap',sub:false},
+        {t:'Card: "Dummy head trick" → simplifies LL edge cases',sub:false},
+        {t:'Review all scheduled cards',sub:false},
+      ]},
+      { name:'Portfolio / ADK', color:'portfolio', time:'11:45-01:30', tasks:[
+        {t:'Implement Callbacks: <code>before_model_callback</code> (input validation)',sub:false},
+        {t:'Implement <code>after_model_callback</code> (output filtering)',sub:false},
+        {t:'Test: try to make agent produce harmful output → verify blocked',sub:false},
+        {t:'Push to GitHub',sub:false},
+      ]},
+      { name:'System Design', color:'sysdesign', time:'02:30-05:00', tasks:[
+        {t:'Estimation: "Memory for LRU cache, 100M users?"',sub:false},
+        {t:'Caching deep dive: LRU, LFU, TTL, write-through vs write-back',sub:false},
+        {t:'Cache stampede / thundering herd prevention',sub:false},
+        {t:'Study Consistent Hashing with virtual nodes',sub:false},
+        {t:'Whiteboard: Distributed cache (like Memcached)',sub:false},
+      ]},
+      { name:'Behavioral', color:'behavioral', time:'05:15-06:15', tasks:[
+        {t:'Draft STAR #6: "Technical Tradeoff Decision"',sub:false},
+        {t:'Practice all 5 stories — each < 2 minutes',sub:false},
+        {t:'Googleyness: "time you received difficult feedback"',sub:false},
+      ]},
+      { name:'Daily Retro', color:'retro', time:'06:15-06:30', tasks:[
+        {t:'Write 3 things learned today',sub:false,retro:true},
+        {t:'Write 1 thing struggled with',sub:false,retro:true},
+        {t:'Write tomorrow\'s #1 priority',sub:false,retro:true},
+      ]},
+    ]},
+    { day:7, title:'Week 1 Consolidation & Checkpoint', subtitle:'Review, re-solve failed problems, weekly assessment', categories:[
+      { name:'Coding', color:'coding', time:'08:00-10:30', tasks:[
+        {t:'Pick 5 problems from Days 1-6 you struggled with — solve fresh, timed',sub:false},
+        {t:'Any you can\'t solve: rewrite solution 3 times from memory',sub:false},
+        {t:'Implement Producer-Consumer with <code>queue.Queue</code>',sub:false},
+        {t:'Explain all concurrency concepts from this week to a rubber duck',sub:false},
+      ]},
+      { name:'Spaced Repetition', color:'srs', time:'10:45-11:45', tasks:[
+        {t:'Full review of ALL flashcards from this week',sub:false},
+        {t:'Delete or merge redundant cards',sub:false},
+        {t:'For every failed card: solve the corresponding LC problem again',sub:false},
+      ]},
+      { name:'Portfolio / ADK', color:'portfolio', time:'11:45-01:30', tasks:[
+        {t:'Code review entire ADK project — README clear for strangers?',sub:false},
+        {t:'Remove hardcoded values → move to config',sub:false},
+        {t:'Add type hints everywhere',sub:false},
+        {t:'Push clean, documented version to GitHub',sub:false},
+      ]},
+      { name:'System Design', color:'sysdesign', time:'02:30-05:00', tasks:[
+        {t:'Whiteboard test: Draw full RAG architecture from memory',sub:false},
+        {t:'Explain HNSW to an imaginary interviewer',sub:false},
+        {t:'Walk through TinyURL design end-to-end',sub:false},
+        {t:'Identify 2 weakest system design areas for Week 2',sub:false},
+      ]},
+      { name:'Behavioral', color:'behavioral', time:'05:15-06:15', tasks:[
+        {t:'Record all 6 stories back-to-back. Listen for filler words.',sub:false},
+        {t:'Rewrite any weak stories',sub:false},
+      ]},
+      { name:'Weekly Assessment', color:'retro', time:'06:15-06:30', tasks:[
+        {t:'Rate 1-5: Arrays, Strings, Two Pointers, Sliding Window, Binary Search, Linked Lists, Stacks',sub:false,retro:true},
+        {t:'Rate 1-5: Vector DBs, RAG, Distributed Systems, Estimation',sub:false,retro:true},
+        {t:'Identify #1 weakness going into Week 2',sub:false,retro:true},
+      ]},
+    ]},
+  ];
+
+  // PHASE 2 — Days 8-14
+  phases[1].days = [
+    { day:8, title:'Binary Trees', subtitle:'Traversals, serialize/deserialize, BFS', categories:[
+      { name:'Coding', color:'coding', time:'08:00-10:30', tasks:[
+        {t:'<strong>Invert Binary Tree</strong> (LC #226) — Recursive <span class="tag tag-easy">EASY</span>',sub:false,lc:true},
+        {t:'<strong>Maximum Depth</strong> (LC #104) — DFS or BFS <span class="tag tag-easy">EASY</span>',sub:false,lc:true},
+        {t:'<strong>Same Tree</strong> (LC #100) <span class="tag tag-easy">EASY</span>',sub:false,lc:true},
+        {t:'<strong>Level Order Traversal</strong> (LC #102) — BFS <span class="tag tag-google">GOOGLE</span>',sub:false,lc:true},
+        {t:'<strong>Serialize/Deserialize Binary Tree</strong> (LC #297) <span class="tag tag-classic">CLASSIC</span> <span class="tag tag-hard">HARD</span>',sub:false,lc:true},
+        {t:'Master all 4 traversals: preorder, inorder, postorder, level-order',sub:false},
+        {t:'Concurrency: Producer-Consumer with <code>threading.Condition</code>',sub:false},
+        {t:'Test with 2 producers and 3 consumers — verify no data loss',sub:false},
+      ]},
+      { name:'Spaced Repetition', color:'srs', time:'10:45-11:45', tasks:[
+        {t:'Cards for all tree traversals (iterative AND recursive)',sub:false},
+        {t:'Card: "Serialize/Deserialize" → preorder + null markers',sub:false},
+        {t:'Card: "BFS template for trees" → queue, level by level',sub:false},
+        {t:'Review all scheduled cards',sub:false},
+      ]},
+      { name:'Portfolio / Antigravity', color:'portfolio', time:'11:45-01:30', tasks:[
+        {t:'Install Google Antigravity IDE',sub:false},
+        {t:'Complete Antigravity onboarding tutorial',sub:false},
+        {t:'Build project using Planning Mode — prompt-driven development',sub:false},
+        {t:'Document: what did Antigravity do well? What needed correction?',sub:false},
+      ]},
+      { name:'System Design', color:'sysdesign', time:'02:30-05:00', tasks:[
+        {t:'Estimation: "Notifications per day for Facebook?" → ~29B',sub:false},
+        {t:'Design a Notification System: push vs pull, priority queues',sub:false},
+        {t:'Study Rate Limiting: Token Bucket, Leaky Bucket, Sliding Window',sub:false},
+        {t:'Whiteboard the notification system architecture',sub:false},
+      ]},
+      { name:'Behavioral', color:'behavioral', time:'05:15-06:15', tasks:[
+        {t:'Draft STAR #7: "Mentoring a Teammate"',sub:false},
+        {t:'Practice telling a story while walking (simulate nerves)',sub:false},
+        {t:'Googleyness: "decision with incomplete information"',sub:false},
+      ]},
+      { name:'Daily Retro', color:'retro', time:'06:15-06:30', tasks:[
+        {t:'Write 3 things learned today',sub:false,retro:true},{t:'Write 1 thing struggled with',sub:false,retro:true},{t:'Write tomorrow\'s #1 priority',sub:false,retro:true},
+      ]},
+    ]},
+    { day:9, title:'BSTs & Validation', subtitle:'Validate BST, LCA, max path sum', categories:[
+      { name:'Coding', color:'coding', time:'08:00-10:30', tasks:[
+        {t:'<strong>Validate BST</strong> (LC #98) — min/max bounds <span class="tag tag-google">GOOGLE</span>',sub:false,lc:true},
+        {t:'<strong>Kth Smallest in BST</strong> (LC #230) — Inorder <span class="tag tag-medium">MED</span>',sub:false,lc:true},
+        {t:'<strong>LCA of BST</strong> (LC #235) — Use BST property <span class="tag tag-medium">MED</span>',sub:false,lc:true},
+        {t:'<strong>LCA of Binary Tree</strong> (LC #236) — Recursive <span class="tag tag-classic">CLASSIC</span>',sub:false,lc:true},
+        {t:'<strong>Binary Tree Max Path Sum</strong> (LC #124) — Post-order <span class="tag tag-google">GOOGLE</span> <span class="tag tag-hard">HARD</span>',sub:false,lc:true},
+        {t:'Concurrency: Reader-Writer with <code>threading.RLock</code> or Semaphore',sub:false},
+        {t:'Allow multiple readers but exclusive writers',sub:false},
+      ]},
+      { name:'Spaced Repetition', color:'srs', time:'10:45-11:45', tasks:[
+        {t:'Card: BST validation (min/max bounds)',sub:false},
+        {t:'Card: LCA approaches (BST vs general tree)',sub:false},
+        {t:'Card: "Max path sum trick" → single-path return, both-paths global',sub:false},
+        {t:'Card: "Reader-Writer problem"',sub:false},
+        {t:'Review scheduled cards',sub:false},
+      ]},
+      { name:'Portfolio / Antigravity', color:'portfolio', time:'11:45-01:30', tasks:[
+        {t:'Build CLI knowledge base tool in Antigravity (add/search/list notes)',sub:false},
+        {t:'Use Browser Agent for research',sub:false},
+        {t:'Evaluate Agent Manager coordination',sub:false},
+        {t:'Push to GitHub',sub:false},
+      ]},
+      { name:'System Design', color:'sysdesign', time:'02:30-05:00', tasks:[
+        {t:'Estimation: "Servers for recommendation model, 500M users?"',sub:false},
+        {t:'LLM Inference: Quantization (FP32→FP16→INT8→INT4)',sub:false},
+        {t:'Study KV Cache, Speculative Decoding, Continuous Batching',sub:false},
+        {t:'Whiteboard: Serve Gemini to 1M concurrent users',sub:false},
+      ]},
+      { name:'Behavioral', color:'behavioral', time:'05:15-06:15', tasks:[
+        {t:'Polish Stories #5-7',sub:false},
+        {t:'Googleyness: "most innovative thing you\'ve done"',sub:false},
+        {t:'Craft your narrative arc: TIAA → Google (why this transition?)',sub:false},
+      ]},
+      { name:'Daily Retro', color:'retro', time:'06:15-06:30', tasks:[
+        {t:'Write 3 things learned today',sub:false,retro:true},{t:'Write 1 thing struggled with',sub:false,retro:true},{t:'Write tomorrow\'s #1 priority',sub:false,retro:true},
+      ]},
+    ]},
+    { day:10, title:'Graphs: BFS & DFS', subtitle:'Islands, clone graph, topological sort', categories:[
+      { name:'Coding', color:'coding', time:'08:00-10:30', tasks:[
+        {t:'<strong>Number of Islands</strong> (LC #200) <span class="tag tag-google">GOOGLE</span>',sub:false,lc:true},
+        {t:'<strong>Clone Graph</strong> (LC #133) — BFS + HashMap <span class="tag tag-medium">MED</span>',sub:false,lc:true},
+        {t:'<strong>Pacific Atlantic Water Flow</strong> (LC #417) <span class="tag tag-google">GOOGLE</span>',sub:false,lc:true},
+        {t:'<strong>Course Schedule</strong> (LC #207) — Topological sort <span class="tag tag-classic">CLASSIC</span>',sub:false,lc:true},
+        {t:'<strong>Course Schedule II</strong> (LC #210) — Return order <span class="tag tag-medium">MED</span>',sub:false,lc:true},
+        {t:'Write BFS and DFS templates (trees AND graphs)',sub:false},
+        {t:'Concurrency: Parallel BFS with <code>ThreadPoolExecutor</code>',sub:false},
+      ]},
+      { name:'Spaced Repetition', color:'srs', time:'10:45-11:45', tasks:[
+        {t:'Card: BFS template (queue + visited)',sub:false},
+        {t:'Card: DFS template (stack/recursion + visited)',sub:false},
+        {t:'Card: "Topological sort — Kahn\'s" → indegree-0 BFS',sub:false},
+        {t:'Card: "Grid BFS/DFS" → 4 directions, bounds, visited',sub:false},
+        {t:'Review scheduled cards',sub:false},
+      ]},
+      { name:'Portfolio / ADK', color:'portfolio', time:'11:45-01:30', tasks:[
+        {t:'Study multi-agent: SequentialAgent vs ParallelAgent vs LoopAgent',sub:false},
+        {t:'Implement LoopAgent that retries until quality threshold',sub:false},
+        {t:'Push to GitHub',sub:false},
+      ]},
+      { name:'System Design', color:'sysdesign', time:'02:30-05:00', tasks:[
+        {t:'Estimation: "Google Knowledge Graph storage (5B entities, 500B edges)?"',sub:false},
+        {t:'Study graph databases and when to use vs relational',sub:false},
+        {t:'Study Trie data structure for autocomplete',sub:false},
+        {t:'Whiteboard: Google Autocomplete/Typeahead',sub:false},
+      ]},
+      { name:'Behavioral', color:'behavioral', time:'05:15-06:15', tasks:[
+        {t:'Draft STAR #8: "Scaling a System Under Pressure"',sub:false},
+        {t:'Create behavioral story matrix (story × question type)',sub:false},
+      ]},
+      { name:'Daily Retro', color:'retro', time:'06:15-06:30', tasks:[
+        {t:'Write 3 things learned today',sub:false,retro:true},{t:'Write 1 thing struggled with',sub:false,retro:true},{t:'Write tomorrow\'s #1 priority',sub:false,retro:true},
+      ]},
+    ]},
+    { day:11, title:'Advanced Graphs: Shortest Path & Union-Find', subtitle:'Dijkstra, Union-Find, Accounts Merge', categories:[
+      { name:'Coding', color:'coding', time:'08:00-10:30', tasks:[
+        {t:'<strong>Network Delay Time</strong> (LC #743) — Dijkstra <span class="tag tag-google">GOOGLE</span>',sub:false,lc:true},
+        {t:'<strong>Redundant Connection</strong> (LC #684) — Union-Find <span class="tag tag-google">GOOGLE</span>',sub:false,lc:true},
+        {t:'<strong>Number of Connected Components</strong> (LC #323) <span class="tag tag-medium">MED</span>',sub:false,lc:true},
+        {t:'<strong>Graph Valid Tree</strong> (LC #261) — UF + edge count <span class="tag tag-medium">MED</span>',sub:false,lc:true},
+        {t:'<strong>Accounts Merge</strong> (LC #721) — UF on strings <span class="tag tag-classic">CLASSIC</span>',sub:false,lc:true},
+        {t:'Implement Union-Find with path compression + union by rank from scratch',sub:false},
+        {t:'Concurrency: Dining Philosophers — deadlock-free solution',sub:false},
+      ]},
+      { name:'Spaced Repetition', color:'srs', time:'10:45-11:45', tasks:[
+        {t:'Card: "Dijkstra\'s" → min-heap, relaxation, non-negative weights',sub:false},
+        {t:'Card: "Union-Find template" → find with compression, union with rank',sub:false},
+        {t:'Card: "Union-Find vs DFS" → dynamic vs static connectivity',sub:false},
+        {t:'Card: "Dining Philosophers" → resource ordering',sub:false},
+        {t:'Review scheduled cards',sub:false},
+      ]},
+      { name:'Portfolio / ADK', color:'portfolio', time:'11:45-01:30', tasks:[
+        {t:'Implement Coordinator/Dispatcher: coordinator → specialized agents → aggregate',sub:false},
+        {t:'Build: Research Agent + Summary Agent + Fact-Check Agent',sub:false},
+        {t:'Push to GitHub',sub:false},
+      ]},
+      { name:'System Design', color:'sysdesign', time:'02:30-05:00', tasks:[
+        {t:'Estimation: "Edges in US road network for Google Maps?"',sub:false},
+        {t:'Study Paxos (simplified) and Raft consensus',sub:false},
+        {t:'Study Chubby (Google\'s distributed lock service)',sub:false},
+        {t:'Whiteboard: Google Maps navigation',sub:false},
+      ]},
+      { name:'Behavioral', color:'behavioral', time:'05:15-06:15', tasks:[
+        {t:'Practice 3 weakest stories from your matrix',sub:false},
+        {t:'Have friend ask 3 random behavioral questions',sub:false},
+        {t:'Googleyness: "pushed back on a bad technical decision"',sub:false},
+      ]},
+      { name:'Daily Retro', color:'retro', time:'06:15-06:30', tasks:[
+        {t:'Write 3 things learned today',sub:false,retro:true},{t:'Write 1 thing struggled with',sub:false,retro:true},{t:'Write tomorrow\'s #1 priority',sub:false,retro:true},
+      ]},
+    ]},
+    { day:12, title:'Heaps & Priority Queues', subtitle:'Two heaps, median, task scheduler', categories:[
+      { name:'Coding', color:'coding', time:'08:00-10:30', tasks:[
+        {t:'<strong>Kth Largest in Stream</strong> (LC #703) — Min-heap <span class="tag tag-easy">EASY</span>',sub:false,lc:true},
+        {t:'<strong>Last Stone Weight</strong> (LC #1046) — Max-heap <span class="tag tag-easy">EASY</span>',sub:false,lc:true},
+        {t:'<strong>K Closest Points</strong> (LC #973) — Max-heap size K <span class="tag tag-google">GOOGLE</span>',sub:false,lc:true},
+        {t:'<strong>Find Median from Data Stream</strong> (LC #295) — Two heaps <span class="tag tag-classic">CLASSIC</span> <span class="tag tag-hard">HARD</span>',sub:false,lc:true},
+        {t:'<strong>Task Scheduler</strong> (LC #621) — Greedy + heap <span class="tag tag-google">GOOGLE</span>',sub:false,lc:true},
+        {t:'Implement min-heap from scratch: <code>sift_up</code> and <code>sift_down</code>',sub:false},
+        {t:'Concurrency: Thread-safe priority queue with <code>Condition</code>',sub:false},
+      ]},
+      { name:'Spaced Repetition', color:'srs', time:'10:45-11:45', tasks:[
+        {t:'Card: "Two-heap for median" → max-heap lower, min-heap upper',sub:false},
+        {t:'Card: "Heap operations" → insert O(log n), extract O(log n), peek O(1)',sub:false},
+        {t:'Card: "K closest approach" → max-heap size K, O(n log K)',sub:false},
+        {t:'Card: "Task Scheduler" → (maxFreq-1)*(n+1)+countMax',sub:false},
+        {t:'Review scheduled cards',sub:false},
+      ]},
+      { name:'Portfolio / ADK', color:'portfolio', time:'11:45-01:30', tasks:[
+        {t:'Implement Parallel Fan-Out/Gather pattern',sub:false},
+        {t:'Integrate BigQuery or GitHub API tool',sub:false},
+        {t:'Push to GitHub',sub:false},
+      ]},
+      { name:'System Design', color:'sysdesign', time:'02:30-05:00', tasks:[
+        {t:'Study Kafka: partitions, consumer groups, offsets',sub:false},
+        {t:'Google Pub/Sub vs Kafka: differences',sub:false},
+        {t:'Event sourcing vs traditional CRUD',sub:false},
+        {t:'Whiteboard: Real-time leaderboard (Redis ZSET, sharding)',sub:false},
+      ]},
+      { name:'Behavioral', color:'behavioral', time:'05:15-06:15', tasks:[
+        {t:'Pivot practice: answer 3 different Qs with Story #1',sub:false},
+        {t:'Practice framing: same story, different angle',sub:false},
+      ]},
+      { name:'Daily Retro', color:'retro', time:'06:15-06:30', tasks:[
+        {t:'Write 3 things learned today',sub:false,retro:true},{t:'Write 1 thing struggled with',sub:false,retro:true},{t:'Write tomorrow\'s #1 priority',sub:false,retro:true},
+      ]},
+    ]},
+    { day:13, title:'Tries & String Algorithms', subtitle:'Trie, word search II, word break', categories:[
+      { name:'Coding', color:'coding', time:'08:00-10:30', tasks:[
+        {t:'<strong>Implement Trie</strong> (LC #208) <span class="tag tag-google">GOOGLE</span>',sub:false,lc:true},
+        {t:'<strong>Add and Search Words</strong> (LC #211) — Trie + DFS <span class="tag tag-google">GOOGLE</span>',sub:false,lc:true},
+        {t:'<strong>Word Search II</strong> (LC #212) — Trie + backtracking <span class="tag tag-classic">CLASSIC</span> <span class="tag tag-hard">HARD</span>',sub:false,lc:true},
+        {t:'<strong>Word Break</strong> (LC #139) — DP + Trie <span class="tag tag-google">GOOGLE</span>',sub:false,lc:true},
+        {t:'<strong>Longest Common Prefix</strong> (LC #14) <span class="tag tag-easy">EASY</span>',sub:false,lc:true},
+        {t:'Implement Trie from scratch (children dict + is_end)',sub:false},
+        {t:'Concurrency: Thread-safe Trie (coarse vs fine-grained locking)',sub:false},
+      ]},
+      { name:'Spaced Repetition', color:'srs', time:'10:45-11:45', tasks:[
+        {t:'Card: "Trie node" → dict of children + is_end boolean',sub:false},
+        {t:'Card: "Word Search II" → trie + backtrack, prune found',sub:false},
+        {t:'Card: "Word Break DP" → dp[i] = can s[0:i] be segmented',sub:false},
+        {t:'Card: "Trie vs HashMap for prefix" → Trie O(L) prefix, HashMap can\'t',sub:false},
+        {t:'Review scheduled cards',sub:false},
+      ]},
+      { name:'Portfolio / ADK', color:'portfolio', time:'11:45-01:30', tasks:[
+        {t:'Add session management to multi-agent system',sub:false},
+        {t:'Agent references past interactions',sub:false},
+        {t:'Write integration tests for multi-agent coordination',sub:false},
+        {t:'Push to GitHub',sub:false},
+      ]},
+      { name:'System Design', color:'sysdesign', time:'02:30-05:00', tasks:[
+        {t:'Study inverted index: posting lists, skip pointers',sub:false},
+        {t:'TF-IDF vs BM25 scoring',sub:false},
+        {t:'Study OT vs CRDTs for collaborative editing',sub:false},
+        {t:'Whiteboard: Google Docs collaborative editing',sub:false},
+      ]},
+      { name:'Behavioral', color:'behavioral', time:'05:15-06:15', tasks:[
+        {t:'45-minute behavioral mock with a partner (video call)',sub:false},
+        {t:'Get feedback on clarity, specificity, "I" vs "we"',sub:false},
+        {t:'Googleyness: "what makes you uncomfortable at work?"',sub:false},
+      ]},
+      { name:'Daily Retro', color:'retro', time:'06:15-06:30', tasks:[
+        {t:'Write 3 things learned today',sub:false,retro:true},{t:'Write 1 thing struggled with',sub:false,retro:true},{t:'Write tomorrow\'s #1 priority',sub:false,retro:true},
+      ]},
+    ]},
+    { day:14, title:'Week 2 Consolidation & Checkpoint', subtitle:'Checkpoint test, speed drill, full card review', categories:[
+      { name:'Coding', color:'coding', time:'08:00-10:30', tasks:[
+        {t:'Checkpoint: 5 hard problems from Days 8-13 (graph, tree, UF). No notes. Timed.',sub:false},
+        {t:'Speed drill: 3 Easy problems in 20 minutes total',sub:false},
+        {t:'Concurrency: Producer-Consumer from memory in under 10 minutes',sub:false},
+        {t:'Explain mutex vs semaphore vs condition variable',sub:false},
+      ]},
+      { name:'Spaced Repetition', color:'srs', time:'10:45-11:45', tasks:[
+        {t:'Full review of all 120+ flashcards',sub:false},
+        {t:'Identify 10 weakest cards — extra time on those patterns',sub:false},
+      ]},
+      { name:'Portfolio', color:'portfolio', time:'11:45-01:30', tasks:[
+        {t:'Use Antigravity to refactor ADK project',sub:false},
+        {t:'Evaluate: does refactoring improve readability?',sub:false},
+        {t:'Clean up GitHub: README, .gitignore, folder structure',sub:false},
+        {t:'Push polished version',sub:false},
+      ]},
+      { name:'System Design', color:'sysdesign', time:'02:30-05:00', tasks:[
+        {t:'Whiteboard test: Notification system from memory',sub:false},
+        {t:'Explain Dijkstra + Google Maps application',sub:false},
+        {t:'Walk through LLM inference optimization',sub:false},
+        {t:'Identify 2 weakest areas for Week 3',sub:false},
+      ]},
+      { name:'Behavioral', color:'behavioral', time:'05:15-06:15', tasks:[
+        {t:'Second behavioral mock with different person',sub:false},
+        {t:'Focus: "Tell me about a time you failed"',sub:false},
+        {t:'Check story matrix for gaps',sub:false},
+      ]},
+      { name:'Weekly Assessment', color:'retro', time:'06:15-06:30', tasks:[
+        {t:'Rate 1-5: Trees, Graphs, BFS/DFS, Union-Find, Heaps, Tries',sub:false,retro:true},
+        {t:'Rate 1-5: Concurrency, System Design, Behavioral',sub:false,retro:true},
+        {t:'Rate think-aloud quality 1-5',sub:false,retro:true},
+      ]},
+    ]},
+  ];
+
+  // PHASE 3 — Days 15-21
+  phases[2].days = [
+    { day:15, title:'1D Dynamic Programming', subtitle:'Climbing stairs, coin change, LIS, decode ways', categories:[
+      { name:'Coding', color:'coding', time:'08:00-10:30', tasks:[
+        {t:'<strong>Climbing Stairs</strong> (LC #70) <span class="tag tag-easy">EASY</span>',sub:false,lc:true},
+        {t:'<strong>House Robber</strong> (LC #198) — Adjacent constraint <span class="tag tag-medium">MED</span>',sub:false,lc:true},
+        {t:'<strong>Coin Change</strong> (LC #322) — Unbounded knapsack <span class="tag tag-google">GOOGLE</span>',sub:false,lc:true},
+        {t:'<strong>Longest Increasing Subsequence</strong> (LC #300) — O(n log n) <span class="tag tag-google">GOOGLE</span>',sub:false,lc:true},
+        {t:'<strong>Decode Ways</strong> (LC #91) — String DP <span class="tag tag-google">GOOGLE</span>',sub:false,lc:true},
+        {t:'For each: write state, recurrence, base case, space optimization',sub:false},
+        {t:'Concurrency: <code>asyncio</code> basics — write async function with await',sub:false},
+        {t:'Compare threading vs asyncio: when to use which',sub:false},
+      ]},
+      { name:'Spaced Repetition', color:'srs', time:'10:45-11:45', tasks:[
+        {t:'Card: "DP framework" → state, recurrence, base, order, answer',sub:false},
+        {t:'Card: "LIS O(n log n)" → tails array + binary search',sub:false},
+        {t:'Card: "Coin Change recurrence"',sub:false},
+        {t:'Card: "1D DP space optimization" → use variables if only depends on i-1, i-2',sub:false},
+        {t:'Review scheduled cards',sub:false},
+      ]},
+      { name:'Portfolio / ADK', color:'portfolio', time:'11:45-01:30', tasks:[
+        {t:'Implement PII detection guardrails (SSN, email, phone regex)',sub:false},
+        {t:'Output filtering: redact model-generated PII',sub:false},
+        {t:'Write tests that verify PII never leaks',sub:false},
+        {t:'Push to GitHub',sub:false},
+      ]},
+      { name:'System Design', color:'sysdesign', time:'02:30-05:00', tasks:[
+        {t:'Estimation: "Compute for fine-tuning 7B model?"',sub:false},
+        {t:'VPC Service Controls: what they protect, configuration',sub:false},
+        {t:'PII detection/redaction architectures',sub:false},
+        {t:'Prompt injection attacks and defenses',sub:false},
+        {t:'Whiteboard: Secure GenAI for healthcare company',sub:false},
+      ]},
+      { name:'Behavioral', color:'behavioral', time:'05:15-06:15', tasks:[
+        {t:'First coding mock (45 min, Pramp or interviewing.io)',sub:false},
+        {t:'Debrief: what went well? What panicked you?',sub:false},
+        {t:'Googleyness: "time you advocated for a user"',sub:false},
+      ]},
+      { name:'Daily Retro', color:'retro', time:'06:15-06:30', tasks:[
+        {t:'Write 3 things learned today',sub:false,retro:true},{t:'Write 1 thing struggled with',sub:false,retro:true},{t:'Write tomorrow\'s #1 priority',sub:false,retro:true},
+      ]},
+    ]},
+    { day:16, title:'2D Dynamic Programming', subtitle:'Edit distance, LCS, interleaving string', categories:[
+      { name:'Coding', color:'coding', time:'08:00-10:30', tasks:[
+        {t:'<strong>Unique Paths</strong> (LC #62) — Grid DP <span class="tag tag-medium">MED</span>',sub:false,lc:true},
+        {t:'<strong>Longest Common Subsequence</strong> (LC #1143) <span class="tag tag-medium">MED</span>',sub:false,lc:true},
+        {t:'<strong>Edit Distance</strong> (LC #72) <span class="tag tag-classic">CLASSIC</span> <span class="tag tag-hard">HARD</span>',sub:false,lc:true},
+        {t:'<strong>Target Sum</strong> (LC #494) — 0/1 Knapsack variant <span class="tag tag-medium">MED</span>',sub:false,lc:true},
+        {t:'<strong>Interleaving String</strong> (LC #97) <span class="tag tag-google">GOOGLE</span>',sub:false,lc:true},
+        {t:'Edit Distance: reduce O(mn) space to O(min(m,n))',sub:false},
+        {t:'Concurrency: <code>asyncio.gather()</code> — fetch 5 URLs concurrently',sub:false},
+      ]},
+      { name:'Spaced Repetition', color:'srs', time:'10:45-11:45', tasks:[
+        {t:'Card: "Edit Distance recurrence"',sub:false},
+        {t:'Card: "LCS recurrence"',sub:false},
+        {t:'Card: "0/1 Knapsack vs Unbounded"',sub:false},
+        {t:'Card: "2D DP space optimization → rolling array"',sub:false},
+        {t:'Review scheduled cards',sub:false},
+      ]},
+      { name:'Portfolio / ADK', color:'portfolio', time:'11:45-01:30', tasks:[
+        {t:'Integrate BigQuery or Cloud Firestore data source',sub:false},
+        {t:'Agent: query data → summarize → generate insights',sub:false},
+        {t:'Write demo script showcasing full pipeline',sub:false},
+        {t:'Push to GitHub',sub:false},
+      ]},
+      { name:'System Design', color:'sysdesign', time:'02:30-05:00', tasks:[
+        {t:'Estimation: "Tokens/sec for Gemini, 10K concurrent chats?"',sub:false},
+        {t:'API Design: REST naming, HTTP methods, status codes',sub:false},
+        {t:'gRPC: protobufs, streaming, when to use over REST',sub:false},
+        {t:'Pagination: cursor-based vs offset-based',sub:false},
+        {t:'Whiteboard: Google Calendar API design',sub:false},
+      ]},
+      { name:'Behavioral', color:'behavioral', time:'05:15-06:15', tasks:[
+        {t:'"Walk me through a project you\'re proud of" — use ADK project',sub:false},
+        {t:'Googleyness: "How do you stay current with technology?"',sub:false},
+      ]},
+      { name:'Daily Retro', color:'retro', time:'06:15-06:30', tasks:[
+        {t:'Write 3 things learned today',sub:false,retro:true},{t:'Write 1 thing struggled with',sub:false,retro:true},{t:'Write tomorrow\'s #1 priority',sub:false,retro:true},
+      ]},
+    ]},
+    { day:17, title:'Backtracking & Recursion', subtitle:'Subsets, permutations, N-Queens', categories:[
+      { name:'Coding', color:'coding', time:'08:00-10:30', tasks:[
+        {t:'<strong>Subsets</strong> (LC #78) — Backtracking template <span class="tag tag-medium">MED</span>',sub:false,lc:true},
+        {t:'<strong>Permutations</strong> (LC #46) — Swap-based <span class="tag tag-medium">MED</span>',sub:false,lc:true},
+        {t:'<strong>Combination Sum</strong> (LC #39) — Pruning <span class="tag tag-google">GOOGLE</span>',sub:false,lc:true},
+        {t:'<strong>N-Queens</strong> (LC #51) <span class="tag tag-google">GOOGLE</span> <span class="tag tag-hard">HARD</span>',sub:false,lc:true},
+        {t:'<strong>Letter Combinations of Phone</strong> (LC #17) <span class="tag tag-google">GOOGLE</span>',sub:false,lc:true},
+        {t:'Write the backtracking template: choose → explore → unchoose',sub:false},
+        {t:'Concurrency: <code>multiprocessing</code> — N-Queens parallel solver',sub:false},
+      ]},
+      { name:'Spaced Repetition', color:'srs', time:'10:45-11:45', tasks:[
+        {t:'Card: "Backtracking template"',sub:false},
+        {t:'Card: "Subsets vs Permutations vs Combinations"',sub:false},
+        {t:'Card: "N-Queens constraints" → row, col, diag (r-c), anti-diag (r+c)',sub:false},
+        {t:'Card: "Threading vs Multiprocessing"',sub:false},
+        {t:'Review scheduled cards',sub:false},
+      ]},
+      { name:'Portfolio / ADK', color:'portfolio', time:'11:45-01:30', tasks:[
+        {t:'Implement Coordinator/Dispatcher from O\'Reilly book',sub:false},
+        {t:'Coordinator → analyze type → dispatch → unified response',sub:false},
+        {t:'Push to GitHub',sub:false},
+      ]},
+      { name:'System Design', color:'sysdesign', time:'02:30-05:00', tasks:[
+        {t:'Study L4 vs L7 load balancing, algorithms',sub:false},
+        {t:'Microservices: service mesh, circuit breaker, retry with backoff',sub:false},
+        {t:'Whiteboard: Google Drive file sharing (ACL, real-time sync)',sub:false},
+      ]},
+      { name:'Behavioral', color:'behavioral', time:'05:15-06:15', tasks:[
+        {t:'3 stories, 2 min each, no pauses — eliminate "we", use "I"',sub:false},
+        {t:'Googleyness: "time you challenged the status quo"',sub:false},
+      ]},
+      { name:'Daily Retro', color:'retro', time:'06:15-06:30', tasks:[
+        {t:'Write 3 things learned today',sub:false,retro:true},{t:'Write 1 thing struggled with',sub:false,retro:true},{t:'Write tomorrow\'s #1 priority',sub:false,retro:true},
+      ]},
+    ]},
+    { day:18, title:'Intervals & Greedy', subtitle:'Merge intervals, meeting rooms II, greedy', categories:[
+      { name:'Coding', color:'coding', time:'08:00-10:30', tasks:[
+        {t:'<strong>Merge Intervals</strong> (LC #56) <span class="tag tag-google">GOOGLE</span>',sub:false,lc:true},
+        {t:'<strong>Insert Interval</strong> (LC #57) <span class="tag tag-google">GOOGLE</span>',sub:false,lc:true},
+        {t:'<strong>Non-overlapping Intervals</strong> (LC #435) — Sort by end <span class="tag tag-google">GOOGLE</span>',sub:false,lc:true},
+        {t:'<strong>Meeting Rooms II</strong> (LC #253) — Min-heap <span class="tag tag-classic">CLASSIC</span>',sub:false,lc:true},
+        {t:'<strong>Min Arrows Burst Balloons</strong> (LC #452) <span class="tag tag-medium">MED</span>',sub:false,lc:true},
+        {t:'Master interval framework: sort → process → track active set',sub:false},
+        {t:'Concurrency: Semaphore for limiting concurrent meetings',sub:false},
+      ]},
+      { name:'Spaced Repetition', color:'srs', time:'10:45-11:45', tasks:[
+        {t:'Card: "Merge Intervals" → sort by start, compare ends',sub:false},
+        {t:'Card: "Meeting Rooms II" → min-heap of end times',sub:false},
+        {t:'Card: "Greedy sort by end" → maximizes non-overlapping',sub:false},
+        {t:'Card: "Sort by start vs end decision"',sub:false},
+        {t:'Review scheduled cards',sub:false},
+      ]},
+      { name:'Portfolio / ADK', color:'portfolio', time:'11:45-01:30', tasks:[
+        {t:'Add monitoring/logging: execution time, success/fail, token usage',sub:false},
+        {t:'Structured JSON logs',sub:false},
+        {t:'Health check endpoint for agents',sub:false},
+        {t:'Push to GitHub',sub:false},
+      ]},
+      { name:'System Design', color:'sysdesign', time:'02:30-05:00', tasks:[
+        {t:'Sharding: hash-based, range-based, geographic',sub:false},
+        {t:'Replication: leader-follower, multi-leader, leaderless',sub:false},
+        {t:'Google Spanner: TrueTime enables external consistency',sub:false},
+        {t:'Whiteboard: Chat application (WebSockets, delivery receipts)',sub:false},
+      ]},
+      { name:'Behavioral', color:'behavioral', time:'05:15-06:15', tasks:[
+        {t:'Second coding mock (45 min, medium-hard, plain text editor)',sub:false},
+        {t:'Compare with Day 15 mock — how much improvement?',sub:false},
+      ]},
+      { name:'Daily Retro', color:'retro', time:'06:15-06:30', tasks:[
+        {t:'Write 3 things learned today',sub:false,retro:true},{t:'Write 1 thing struggled with',sub:false,retro:true},{t:'Write tomorrow\'s #1 priority',sub:false,retro:true},
+      ]},
+    ]},
+    { day:19, title:'Advanced DP: State Machine & Bitmask', subtitle:'Stock problems, burst balloons, interval DP', categories:[
+      { name:'Coding', color:'coding', time:'08:00-10:30', tasks:[
+        {t:'<strong>Stock with Cooldown</strong> (LC #309) — State machine DP <span class="tag tag-medium">MED</span>',sub:false,lc:true},
+        {t:'<strong>Stock IV</strong> (LC #188) — k transactions <span class="tag tag-hard">HARD</span>',sub:false,lc:true},
+        {t:'<strong>Partition Equal Subset</strong> (LC #416) — 0/1 Knapsack <span class="tag tag-medium">MED</span>',sub:false,lc:true},
+        {t:'<strong>Palindrome Partitioning</strong> (LC #131) — Backtracking + DP <span class="tag tag-medium">MED</span>',sub:false,lc:true},
+        {t:'<strong>Burst Balloons</strong> (LC #312) — Interval DP <span class="tag tag-google">GOOGLE</span> <span class="tag tag-hard">HARD</span>',sub:false,lc:true},
+        {t:'Draw state machine diagram for stock problems (hold, sold, rest)',sub:false},
+        {t:'Concurrency: <code>concurrent.futures</code> — parallel matrix multiply',sub:false},
+      ]},
+      { name:'Spaced Repetition', color:'srs', time:'10:45-11:45', tasks:[
+        {t:'Card: "Stock state machine" → hold, sold, rest transitions',sub:false},
+        {t:'Card: "Interval DP template" → dp[i][j] for subarray [i..j]',sub:false},
+        {t:'Card: "Subset Sum" → dp[target], iterate items then target backwards',sub:false},
+        {t:'Card: "Bitmask DP" → integer bits represent subset state',sub:false},
+        {t:'Review scheduled cards',sub:false},
+      ]},
+      { name:'Portfolio / ADK', color:'portfolio', time:'11:45-01:30', tasks:[
+        {t:'Integrate GitHub API: search repos, create issues, summarize PRs',sub:false},
+        {t:'Push to GitHub',sub:false},
+      ]},
+      { name:'System Design', color:'sysdesign', time:'02:30-05:00', tasks:[
+        {t:'Fine-tuning vs RAG vs Prompt Engineering: when and why',sub:false},
+        {t:'Model distillation and knowledge transfer',sub:false},
+        {t:'Whiteboard: Fine-tuning + deploying custom LLMs at scale',sub:false},
+      ]},
+      { name:'Behavioral', color:'behavioral', time:'05:15-06:15', tasks:[
+        {t:'"Your biggest technical mistake" — what happened, impact, lesson',sub:false},
+        {t:'Googleyness: "How do you handle ambiguity?"',sub:false},
+      ]},
+      { name:'Daily Retro', color:'retro', time:'06:15-06:30', tasks:[
+        {t:'Write 3 things learned today',sub:false,retro:true},{t:'Write 1 thing struggled with',sub:false,retro:true},{t:'Write tomorrow\'s #1 priority',sub:false,retro:true},
+      ]},
+    ]},
+    { day:20, title:'Bit Manipulation & Math', subtitle:'XOR, fast exponentiation, GCD, multiply strings', categories:[
+      { name:'Coding', color:'coding', time:'08:00-10:30', tasks:[
+        {t:'<strong>Single Number</strong> (LC #136) — XOR <span class="tag tag-easy">EASY</span>',sub:false,lc:true},
+        {t:'<strong>Number of 1 Bits</strong> (LC #191) — Brian Kernighan <span class="tag tag-easy">EASY</span>',sub:false,lc:true},
+        {t:'<strong>Counting Bits</strong> (LC #338) — DP + bit manipulation <span class="tag tag-easy">EASY</span>',sub:false,lc:true},
+        {t:'<strong>Pow(x, n)</strong> (LC #50) — Fast exponentiation <span class="tag tag-google">GOOGLE</span>',sub:false,lc:true},
+        {t:'<strong>Multiply Strings</strong> (LC #43) — Big number mult <span class="tag tag-google">GOOGLE</span>',sub:false,lc:true},
+        {t:'Learn GCD (Euclidean), modular arithmetic, prime checking',sub:false},
+        {t:'Concurrency: <code>threading.Barrier</code>, parallel prime checking',sub:false},
+      ]},
+      { name:'Spaced Repetition', color:'srs', time:'10:45-11:45', tasks:[
+        {t:'Card: "XOR properties" → a^a=0, a^0=a, commutative',sub:false},
+        {t:'Card: "Brian Kernighan" → n & (n-1) removes lowest set bit',sub:false},
+        {t:'Card: "Fast exponentiation"',sub:false},
+        {t:'Card: "GCD Euclidean" → gcd(a,b) = gcd(b, a%b)',sub:false},
+        {t:'Review scheduled cards',sub:false},
+      ]},
+      { name:'Portfolio / ADK', color:'portfolio', time:'11:45-01:30', tasks:[
+        {t:'Comprehensive tests: unit, integration, edge cases',sub:false},
+        {t:'Aim for >80% code coverage',sub:false},
+        {t:'Push to GitHub',sub:false},
+      ]},
+      { name:'System Design', color:'sysdesign', time:'02:30-05:00', tasks:[
+        {t:'Evaluation metrics: Precision, Recall, F1, AUC-ROC',sub:false},
+        {t:'NLP: BLEU, ROUGE, METEOR, BERTScore',sub:false},
+        {t:'LLM-as-a-Judge evaluation pattern',sub:false},
+        {t:'Whiteboard: A/B testing system for LLM responses',sub:false},
+      ]},
+      { name:'Behavioral', color:'behavioral', time:'05:15-06:15', tasks:[
+        {t:'Link technical work to business impact: not "I built X" → "X reduced Y by Z%"',sub:false},
+        {t:'Googleyness: "describe your ideal work environment"',sub:false},
+      ]},
+      { name:'Daily Retro', color:'retro', time:'06:15-06:30', tasks:[
+        {t:'Write 3 things learned today',sub:false,retro:true},{t:'Write 1 thing struggled with',sub:false,retro:true},{t:'Write tomorrow\'s #1 priority',sub:false,retro:true},
+      ]},
+    ]},
+    { day:21, title:'Week 3 Consolidation & Checkpoint', subtitle:'Full mock system design, 170+ cards, code review', categories:[
+      { name:'Coding', color:'coding', time:'08:00-10:30', tasks:[
+        {t:'Checkpoint: 6 problems from Days 15-20 (DP, backtracking, interval, graph, string, concurrency)',sub:false},
+        {t:'Grade: each solved in under 25 minutes?',sub:false},
+      ]},
+      { name:'Spaced Repetition', color:'srs', time:'10:45-11:45', tasks:[
+        {t:'Full review of 170+ cards',sub:false},
+        {t:'Hardest 15 cards: attempt corresponding LC problem',sub:false},
+      ]},
+      { name:'Portfolio', color:'portfolio', time:'11:45-01:30', tasks:[
+        {t:'Full code review: would a Google engineer be impressed?',sub:false},
+        {t:'Verify: clean architecture, error handling, type hints, tests pass',sub:false},
+        {t:'Comprehensive README with architecture diagram',sub:false},
+        {t:'Push polished version',sub:false},
+      ]},
+      { name:'System Design', color:'sysdesign', time:'02:30-05:00', tasks:[
+        {t:'Whiteboard: Secure healthcare GenAI (from memory)',sub:false},
+        {t:'Whiteboard: Google Calendar API',sub:false},
+        {t:'Full 45-min mock system design with a partner',sub:false},
+      ]},
+      { name:'Behavioral', color:'behavioral', time:'05:15-06:15', tasks:[
+        {t:'Third behavioral mock — should be smooth and natural',sub:false},
+        {t:'Record and self-evaluate',sub:false},
+        {t:'Googleyness check: ethics, teamwork, ambiguity, growth, user advocacy',sub:false},
+      ]},
+      { name:'Weekly Assessment', color:'retro', time:'06:15-06:30', tasks:[
+        {t:'Rate 1-5: DP, Backtracking, Intervals, Bit, Math, Security, API, Evaluation',sub:false,retro:true},
+        {t:'Rate 1-5: Behavioral smoothness, think-aloud, concurrency',sub:false,retro:true},
+      ]},
+    ]},
+  ];
+
+  // PHASE 4 — Days 22-30
+  phases[3].days = [
+    { day:22, title:'Segment Trees & Advanced DS', subtitle:'Skyline, line sweep, GCD for slope', categories:[
+      { name:'Coding', color:'coding', time:'08:00-10:30', tasks:[
+        {t:'<strong>Range Sum Query Mutable</strong> (LC #307) — Segment tree <span class="tag tag-medium">MED</span>',sub:false,lc:true},
+        {t:'<strong>Count Smaller After Self</strong> (LC #315) <span class="tag tag-google">GOOGLE</span> <span class="tag tag-hard">HARD</span>',sub:false,lc:true},
+        {t:'<strong>The Skyline Problem</strong> (LC #218) — Line sweep <span class="tag tag-classic">CLASSIC</span> <span class="tag tag-hard">HARD</span>',sub:false,lc:true},
+        {t:'<strong>Rectangle Area</strong> (LC #223) — Geometry <span class="tag tag-medium">MED</span>',sub:false,lc:true},
+        {t:'<strong>Max Points on a Line</strong> (LC #149) — GCD slope <span class="tag tag-google">GOOGLE</span> <span class="tag tag-hard">HARD</span>',sub:false,lc:true},
+        {t:'Implement basic Segment Tree: build, update, query',sub:false},
+      ]},
+      { name:'Spaced Repetition', color:'srs', time:'10:45-11:45', tasks:[
+        {t:'Card: "Segment Tree ops" → build O(n), update O(log n), query O(log n)',sub:false},
+        {t:'Card: "Line sweep technique"',sub:false},
+        {t:'Card: "GCD for slope" → avoid float, use dy/gcd dx/gcd',sub:false},
+        {t:'Retire easy mastered cards',sub:false},
+      ]},
+      { name:'Portfolio / Deployment', color:'portfolio', time:'11:45-01:30', tasks:[
+        {t:'Write Dockerfile',sub:false},
+        {t:'Write docker-compose.yml if multi-service',sub:false},
+        {t:'Test: <code>docker build</code> and <code>docker run</code> work',sub:false},
+        {t:'Push to GitHub',sub:false},
+      ]},
+      { name:'System Design', color:'sysdesign', time:'02:30-05:00', tasks:[
+        {t:'Full 45-min mock system design with a partner',sub:false},
+        {t:'Debrief: clarifying questions, estimation accuracy, depth',sub:false},
+      ]},
+      { name:'Behavioral', color:'behavioral', time:'05:15-06:15', tasks:[
+        {t:'Rapid-fire: 6 random questions, 2 min each',sub:false},
+        {t:'Practice "Why Google?" until natural',sub:false},
+      ]},
+      { name:'Daily Retro', color:'retro', time:'06:15-06:30', tasks:[
+        {t:'Write 3 things learned today',sub:false,retro:true},{t:'Write 1 thing struggled with',sub:false,retro:true},{t:'Write tomorrow\'s #1 priority',sub:false,retro:true},
+      ]},
+    ]},
+    { day:23, title:'Full Mock Coding Simulation', subtitle:'45-min mock, plain text, think aloud, record', categories:[
+      { name:'Coding', color:'coding', time:'08:00-10:30', tasks:[
+        {t:'Full 45-min mock: 2 problems, plain text editor, think aloud, record',sub:false},
+        {t:'Review solutions, compare with optimal',sub:false},
+        {t:'Write: "In interview I would have said ___" for missed optimizations',sub:false},
+      ]},
+      { name:'Spaced Repetition', color:'srs', time:'10:45-11:45', tasks:[
+        {t:'Focus only on "Hard" marked cards',sub:false},
+        {t:'Teach any concept you can\'t recall to a rubber duck',sub:false},
+      ]},
+      { name:'Portfolio / Deployment', color:'portfolio', time:'11:45-01:30', tasks:[
+        {t:'Deploy agent to Google Cloud (Vertex AI or Cloud Run)',sub:false},
+        {t:'Verify deployed agent responds to test queries',sub:false},
+        {t:'Push deployment config to GitHub',sub:false},
+      ]},
+      { name:'System Design', color:'sysdesign', time:'02:30-05:00', tasks:[
+        {t:'Study: Dremel/BigQuery architecture',sub:false},
+        {t:'Study: Borg (predecessor to K8s)',sub:false},
+        {t:'Practice: explain each Google system in 5 min',sub:false},
+      ]},
+      { name:'Behavioral', color:'behavioral', time:'05:15-06:15', tasks:[
+        {t:'Practice "Tell me about yourself" (2 min max)',sub:false},
+        {t:'Googleyness: "coworker not pulling their weight?"',sub:false},
+      ]},
+      { name:'Daily Retro', color:'retro', time:'06:15-06:30', tasks:[
+        {t:'Write 3 things learned today',sub:false,retro:true},{t:'Write 1 thing struggled with',sub:false,retro:true},{t:'Write tomorrow\'s #1 priority',sub:false,retro:true},
+      ]},
+    ]},
+    { day:24, title:'Weak Areas Deep Dive', subtitle:'Targeted practice on 3 weakest areas', categories:[
+      { name:'Coding', color:'coding', time:'08:00-10:30', tasks:[
+        {t:'Review self-assessments from Days 7, 14, 21',sub:false},
+        {t:'Identify 3 weakest coding areas',sub:false},
+        {t:'2 medium + 1 hard from EACH weak area (min 6 problems)',sub:false},
+        {t:'Write pattern from memory BEFORE looking at solution',sub:false},
+      ]},
+      { name:'Spaced Repetition', color:'srs', time:'10:45-11:45', tasks:[
+        {t:'Create 1-page summary sheets for weak areas',sub:false},
+        {t:'These become "night before" review material',sub:false},
+      ]},
+      { name:'Portfolio / Writing', color:'portfolio', time:'11:45-01:30', tasks:[
+        {t:'Write Medium article: architecture overview + diagram',sub:false},
+        {t:'Key decisions, lessons learned (1500-2000 words)',sub:false},
+        {t:'Push final version to GitHub',sub:false},
+      ]},
+      { name:'System Design', color:'sysdesign', time:'02:30-05:00', tasks:[
+        {t:'Pick 1 design from: YouTube, Google Photos, Google Translate, Uber, Content Moderation',sub:false},
+        {t:'Full 35-min whiteboard',sub:false},
+        {t:'Review and fill gaps',sub:false},
+      ]},
+      { name:'Behavioral', color:'behavioral', time:'05:15-06:15', tasks:[
+        {t:'Practice with a NEW person (fresh perspective)',sub:false},
+        {t:'Ask: "What\'s unclear? What should I cut?"',sub:false},
+        {t:'Finalize all 8 stories — only polishing from here',sub:false},
+      ]},
+      { name:'Daily Retro', color:'retro', time:'06:15-06:30', tasks:[
+        {t:'Write 3 things learned today',sub:false,retro:true},{t:'Write 1 thing struggled with',sub:false,retro:true},{t:'Write tomorrow\'s #1 priority',sub:false,retro:true},
+      ]},
+    ]},
+    { day:25, title:'Full Interview Day Simulation #1', subtitle:'4 mock rounds: 2 coding + 1 behavioral + 1 system design', categories:[
+      { name:'Coding Mock #1', color:'coding', time:'08:00-10:30', tasks:[
+        {t:'45-min mock: medium-hard, data structures focus',sub:false},
+        {t:'Debrief (45 min): what would interviewer score?',sub:false},
+      ]},
+      { name:'Behavioral Mock', color:'behavioral', time:'10:45-11:45', tasks:[
+        {t:'45-min behavioral: leadership, conflict, failure, Googleyness',sub:false},
+      ]},
+      { name:'Coding Mock #2', color:'coding', time:'11:45-01:30', tasks:[
+        {t:'45-min mock: hard, graph/DP focus',sub:false},
+        {t:'Debrief',sub:false},
+      ]},
+      { name:'System Design Mock', color:'sysdesign', time:'02:30-05:00', tasks:[
+        {t:'45-min system design mock with estimation',sub:false},
+        {t:'Debrief (75 min): deep review of weaknesses',sub:false},
+      ]},
+      { name:'Evening Retro', color:'retro', time:'05:15-06:15', tasks:[
+        {t:'Detailed retrospective of today\'s performance',sub:false,retro:true},
+        {t:'Top 3 improvements for remaining days',sub:false,retro:true},
+        {t:'Light walk. Decompress.',sub:false,retro:true},
+      ]},
+    ]},
+    { day:26, title:'Recovery & Targeted Fixes', subtitle:'Based on Day 25 feedback, fix weaknesses', categories:[
+      { name:'Coding', color:'coding', time:'08:00-10:30', tasks:[
+        {t:'Drill specific problem types from Day 25 feedback',sub:false},
+        {t:'5 focused problems (targeted, not random)',sub:false},
+        {t:'Each in under 20 minutes?',sub:false},
+      ]},
+      { name:'Spaced Repetition', color:'srs', time:'10:45-11:45', tasks:[
+        {t:'Review consistently wrong cards',sub:false},
+        {t:'Create "cheat sheet" for common mistakes (off-by-one, empty input, visited)',sub:false},
+      ]},
+      { name:'Portfolio', color:'portfolio', time:'11:45-01:30', tasks:[
+        {t:'Final GitHub cleanup: README, screenshots, architecture diagram',sub:false},
+        {t:'All tests passing',sub:false},
+        {t:'Publish Medium article',sub:false},
+        {t:'Update LinkedIn with project',sub:false},
+      ]},
+      { name:'System Design', color:'sysdesign', time:'02:30-05:00', tasks:[
+        {t:'1-page summary: Design Google Search',sub:false},
+        {t:'1-page summary: Design Gmail',sub:false},
+        {t:'1-page summary: Design ML Feature Store',sub:false},
+        {t:'Can you estimate for each in 5 min?',sub:false},
+      ]},
+      { name:'Behavioral', color:'behavioral', time:'05:15-06:15', tasks:[
+        {t:'Speed round: 10 questions, 90 seconds each',sub:false},
+        {t:'Focus: clarity and confidence over completeness',sub:false},
+      ]},
+      { name:'Daily Retro', color:'retro', time:'06:15-06:30', tasks:[
+        {t:'Write 3 things learned today',sub:false,retro:true},{t:'Write 1 thing struggled with',sub:false,retro:true},{t:'Write tomorrow\'s #1 priority',sub:false,retro:true},
+      ]},
+    ]},
+    { day:27, title:'Full Interview Day Simulation #2', subtitle:'Should be noticeably better than Day 25', categories:[
+      { name:'Coding Mock #1', color:'coding', time:'08:00-10:30', tasks:[
+        {t:'45-min coding mock — algorithm focus',sub:false},
+        {t:'Debrief',sub:false},
+      ]},
+      { name:'Behavioral Mock', color:'behavioral', time:'10:45-11:45', tasks:[
+        {t:'45-min behavioral with different partner',sub:false},
+      ]},
+      { name:'Coding Mock #2', color:'coding', time:'11:45-01:30', tasks:[
+        {t:'45-min mock — API design variant',sub:false},
+        {t:'Debrief',sub:false},
+      ]},
+      { name:'System Design Mock', color:'sysdesign', time:'02:30-05:00', tasks:[
+        {t:'45-min AI/ML system design mock',sub:false},
+        {t:'Retro: compare with Day 25. What improved?',sub:false},
+      ]},
+      { name:'Evening Retro', color:'retro', time:'05:15-06:15', tasks:[
+        {t:'What improved since Day 25?',sub:false,retro:true},
+        {t:'What still needs work?',sub:false,retro:true},
+      ]},
+    ]},
+    { day:28, title:'Fine-Tuning & Confidence Building', subtitle:'Speed drills, final review, demo prep', categories:[
+      { name:'Coding', color:'coding', time:'08:00-10:30', tasks:[
+        {t:'5 previously-solved problems FAST — medium < 15 min, hard < 25 min',sub:false},
+        {t:'Concurrency final: explain mutexes, semaphores, condition vars, deadlock prevention',sub:false},
+      ]},
+      { name:'Spaced Repetition', color:'srs', time:'10:45-11:45', tasks:[
+        {t:'Final full review of all cards',sub:false},
+        {t:'Retire mastered cards. Keep 30-40 for final drill.',sub:false},
+      ]},
+      { name:'Portfolio', color:'portfolio', time:'11:45-01:30', tasks:[
+        {t:'Verify deployed agent still running',sub:false},
+        {t:'Prepare 5-min demo of ADK project',sub:false},
+        {t:'"Walk me through your architecture" in 3 minutes',sub:false},
+      ]},
+      { name:'System Design', color:'sysdesign', time:'02:30-05:00', tasks:[
+        {t:'Review 1-page summaries from Day 26',sub:false},
+        {t:'Practice structured answer: requirements → estimation → design → deep dive → tradeoffs → monitoring',sub:false},
+        {t:'One more mock if possible',sub:false},
+      ]},
+      { name:'Behavioral', color:'behavioral', time:'05:15-06:15', tasks:[
+        {t:'Final "Why Google?" practice',sub:false},
+        {t:'Final "Tell me about yourself" practice',sub:false},
+        {t:'Should be able to answer ANY behavioral question',sub:false},
+      ]},
+      { name:'Weekly Assessment', color:'retro', time:'06:15-06:30', tasks:[
+        {t:'Final ratings: Coding, System Design, Behavioral, Concurrency, Portfolio',sub:false,retro:true},
+        {t:'Confidence level for interview: ___/10',sub:false,retro:true},
+        {t:'Remaining concerns',sub:false,retro:true},
+      ]},
+    ]},
+    { day:29, title:'Taper Day — Light Review', subtitle:'Like before a marathon: light practice, preserve energy', categories:[
+      { name:'Light Coding', color:'coding', time:'08:00-10:30', tasks:[
+        {t:'3 easy problems in 15 min (warm up, not grind)',sub:false},
+        {t:'Review personal cheat sheet of patterns',sub:false},
+        {t:'Read your solutions to 5 hardest problems you solved',sub:false},
+      ]},
+      { name:'Final Cards', color:'srs', time:'10:45-11:45', tasks:[
+        {t:'Quick pass through 30-40 remaining flashcards',sub:false},
+        {t:'Focus on confidence, not cramming',sub:false},
+      ]},
+      { name:'Portfolio Check', color:'portfolio', time:'11:45-01:30', tasks:[
+        {t:'Verify: GitHub, deployed agent, Medium article all working',sub:false},
+        {t:'Have URLs ready to share if asked',sub:false},
+      ]},
+      { name:'System Design Review', color:'sysdesign', time:'02:30-04:00', tasks:[
+        {t:'Skim 1-page summaries for 5 designs',sub:false},
+        {t:'Estimation for 3 random scenarios',sub:false},
+      ]},
+      { name:'Mental Preparation', color:'behavioral', time:'04:00-05:00', tasks:[
+        {t:'Review "Why Google?" answer',sub:false},
+        {t:'Review "Tell me about yourself"',sub:false},
+        {t:'Read all 8 STAR stories once',sub:false},
+        {t:'Prepare logistics: time, links, quiet space, water, charger',sub:false},
+      ]},
+      { name:'REST', color:'retro', time:'05:00+', tasks:[
+        {t:'No more studying. Exercise or enjoy something.',sub:false,retro:true},
+        {t:'Get 8 hours of sleep. Non-negotiable.',sub:false,retro:true},
+      ]},
+    ]},
+    { day:30, title:'Interview Day', subtitle:'Execute. You\'ve prepared. Trust the process.', categories:[
+      { name:'Pre-Interview', color:'retro', time:'Morning', tasks:[
+        {t:'8 hours of sleep ✓',sub:false},
+        {t:'Light breakfast (protein, not heavy carbs) ✓',sub:false},
+        {t:'Quiet room, good internet, camera works ✓',sub:false},
+        {t:'Water and notepad ready ✓',sub:false},
+        {t:'Phone on silent ✓',sub:false},
+      ]},
+      { name:'During Interview — Remember', color:'coding', time:'Interview', tasks:[
+        {t:'Clarify before coding. Always.',sub:false},
+        {t:'Brute force first, optimize after.',sub:false},
+        {t:'Think aloud. Silence = negative signal.',sub:false},
+        {t:'Test code with examples. Edge cases too.',sub:false},
+        {t:'Be genuine in behavioral. Specifics beat vague answers.',sub:false},
+        {t:'System design: estimation first, high-level, then deep dive.',sub:false},
+        {t:'Ask thoughtful questions at end of each round.',sub:false},
+      ]},
+      { name:'Questions to Ask Interviewers', color:'behavioral', time:'End of rounds', tasks:[
+        {t:'"Most challenging technical problem your team solved recently?"',sub:false},
+        {t:'"How does your team balance tech debt vs feature development?"',sub:false},
+        {t:'"What does successful first 6 months look like?"',sub:false},
+        {t:'"How does the team approach code reviews and knowledge sharing?"',sub:false},
+      ]},
+    ]},
+  ];
+
+  return phases;
+}
+
+function render() {
+  renderPhaseTabs();
+  renderDays();
+  updateStats();
+}
+
+function renderPhaseTabs() {
+  const c = document.getElementById('phaseTabs');
+  c.innerHTML = '<div class="phase-tab active" data-phase="all">All Days</div>';
+  DATA.forEach(p => {
+    const total = countPhaseTasks(p);
+    const done = countPhaseCompleted(p);
+    const pct = total ? Math.round(done/total*100) : 0;
+    c.innerHTML += `<div class="phase-tab" data-phase="${p.id}">${p.name.split(':')[0]}<span class="tab-progress">${pct}%</span></div>`;
+  });
+  c.querySelectorAll('.phase-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      c.querySelectorAll('.phase-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      filterPhase(tab.dataset.phase);
+    });
+  });
+}
+
+function filterPhase(phaseId) {
+  document.querySelectorAll('.day-card').forEach(card => {
+    if (phaseId === 'all') { card.classList.remove('hidden'); return; }
+    card.classList.toggle('hidden', card.dataset.phase !== phaseId);
+  });
+}
+
+function renderDays() {
+  const container = document.getElementById('daysContainer');
+  const searchVal = (document.getElementById('searchInput').value||'').toLowerCase();
+  container.innerHTML = '';
+  DATA.forEach(phase => {
+    phase.days.forEach(day => {
+      const dayId = `day${day.day}`;
+      const tasks = getAllTasks(day);
+      const total = tasks.length;
+      const done = tasks.filter((_,i) => state.checked[`${dayId}_${i}`]).length;
+      const pct = total ? Math.round(done/total*100) : 0;
+      const isComplete = done === total && total > 0;
+      const isOpen = state[`open_${dayId}`];
+
+      if (searchVal) {
+        const hasMatch = day.title.toLowerCase().includes(searchVal) ||
+          day.subtitle.toLowerCase().includes(searchVal) ||
+          tasks.some(t => t.t.replace(/<[^>]*>/g,'').toLowerCase().includes(searchVal));
+        if (!hasMatch) return;
+      }
+
+      const card = document.createElement('div');
+      card.className = `day-card${isComplete?' completed':''}${isOpen?' open':''}`;
+      card.dataset.phase = phase.id;
+      card.dataset.day = dayId;
+
+      card.innerHTML = `
+        <div class="day-header" data-day="${dayId}">
+          <div class="day-header-left">
+            <div class="day-number">${day.day}</div>
+            <div class="day-title-area">
+              <div class="day-title">${day.title}</div>
+              <div class="day-subtitle">${day.subtitle}</div>
+            </div>
+          </div>
+          <div class="day-header-right">
+            <div class="day-progress-mini"><div class="day-progress-mini-fill" style="width:${pct}%"></div></div>
+            <div class="day-progress-label">${done}/${total}</div>
+            <div class="chevron">&#9660;</div>
+          </div>
+        </div>
+        <div class="day-body">${renderCategories(day, dayId)}</div>
+      `;
+      container.appendChild(card);
+    });
+  });
+
+  document.querySelectorAll('.day-header').forEach(h => {
+    h.addEventListener('click', () => {
+      const card = h.closest('.day-card');
+      card.classList.toggle('open');
+      state[`open_${h.dataset.day}`] = card.classList.contains('open');
+      saveState();
+    });
+  });
+
+  document.querySelectorAll('.task').forEach(task => {
+    task.addEventListener('click', (e) => {
+      if (e.target.tagName === 'TEXTAREA') return;
+      const id = task.dataset.id;
+      state.checked[id] = !state.checked[id];
+      task.classList.toggle('checked', state.checked[id]);
+      saveState();
+      updateStats();
+      renderPhaseTabs();
+      const card = task.closest('.day-card');
+      const dayId = card.dataset.day;
+      const dayData = findDay(dayId);
+      if (dayData) {
+        const tasks = getAllTasks(dayData);
+        const done = tasks.filter((_,i) => state.checked[`${dayId}_${i}`]).length;
+        const total = tasks.length;
+        card.classList.toggle('completed', done === total);
+        card.querySelector('.day-number').className = 'day-number';
+        if (done === total) card.querySelector('.day-number').style.background = 'var(--green)';
+        else card.querySelector('.day-number').style.background = '';
+        const pct = total ? Math.round(done/total*100) : 0;
+        card.querySelector('.day-progress-mini-fill').style.width = pct+'%';
+        card.querySelector('.day-progress-label').textContent = `${done}/${total}`;
+      }
+      if (state.checked[id]) showToast('Task completed!');
+    });
+  });
+
+  document.querySelectorAll('.retro-textarea').forEach(ta => {
+    ta.addEventListener('input', () => {
+      state.notes[ta.dataset.id] = ta.value;
+      saveState();
+    });
+  });
+}
+
+function renderCategories(day, dayId) {
+  let html = '';
+  let taskIdx = 0;
+  day.categories.forEach(cat => {
+    const catTasks = cat.tasks;
+    const catDone = catTasks.filter((_,i) => state.checked[`${dayId}_${taskIdx+i}`]).length;
+    html += `<div class="category">
+      <div class="category-header">
+        <div class="category-dot" style="background:var(--${cat.color})"></div>
+        <div class="category-name">${cat.name}</div>
+        <div class="category-time">${cat.time}</div>
+        <div class="category-progress-text">${catDone}/${catTasks.length}</div>
+      </div>`;
+    catTasks.forEach(task => {
+      const tid = `${dayId}_${taskIdx}`;
+      const checked = state.checked[tid];
+      html += `<div class="task${task.sub?' subtask':''}${checked?' checked':''}" data-id="${tid}">
+        <div class="checkmark"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="task-text">${task.t}</div>
+      </div>`;
+      if (task.retro) {
+        html += `<textarea class="retro-textarea" data-id="note_${tid}" placeholder="Write your notes here...">${state.notes[`note_${tid}`]||''}</textarea>`;
+      }
+      taskIdx++;
+    });
+    html += '</div>';
+  });
+  return html;
+}
+
+function getAllTasks(day) {
+  const tasks = [];
+  day.categories.forEach(cat => cat.tasks.forEach(t => tasks.push(t)));
+  return tasks;
+}
+
+function findDay(dayId) {
+  const num = parseInt(dayId.replace('day',''));
+  for (const p of DATA) for (const d of p.days) if (d.day === num) return d;
+  return null;
+}
+
+function countPhaseTasks(phase) {
+  let n = 0;
+  phase.days.forEach(d => d.categories.forEach(c => n += c.tasks.length));
+  return n;
+}
+
+function countPhaseCompleted(phase) {
+  let n = 0;
+  phase.days.forEach(d => {
+    let idx = 0;
+    d.categories.forEach(c => c.tasks.forEach(() => {
+      if (state.checked[`day${d.day}_${idx}`]) n++;
+      idx++;
+    }));
+  });
+  return n;
+}
+
+function updateStats() {
+  let total = 0, done = 0, daysComplete = 0, lcDone = 0;
+  DATA.forEach(phase => {
+    phase.days.forEach(day => {
+      let dayTotal = 0, dayDone = 0, idx = 0;
+      day.categories.forEach(cat => cat.tasks.forEach(task => {
+        total++; dayTotal++;
+        const tid = `day${day.day}_${idx}`;
+        if (state.checked[tid]) { done++; dayDone++; if(task.lc) lcDone++; }
+        idx++;
+      }));
+      if (dayDone === dayTotal && dayTotal > 0) daysComplete++;
+    });
+  });
+  document.getElementById('statCompleted').textContent = done;
+  document.getElementById('statTotal').textContent = total;
+  document.getElementById('statDaysCompleted').textContent = daysComplete;
+  document.getElementById('statProblems').textContent = lcDone;
+  const pct = total ? Math.round(done/total*100) : 0;
+  document.getElementById('overallBar').style.width = Math.max(pct, 3)+'%';
+  document.getElementById('overallBarText').textContent = pct+'%';
+
+  // Streak
+  let streak = 0;
+  for (let d = 1; d <= 30; d++) {
+    const day = findDay(`day${d}`);
+    if (!day) break;
+    const tasks = getAllTasks(day);
+    const dayDone = tasks.filter((_,i) => state.checked[`day${d}_${i}`]).length;
+    if (dayDone > 0) streak = d; else if (d > 1 && streak < d-1) break;
+  }
+  document.getElementById('streakText').textContent = `Day ${Math.min(streak,30)} of 30`;
+  const streakPct = Math.round(streak/30*100);
+  document.getElementById('streakSub').textContent = streak === 0 ? 'Start checking off tasks to build your streak' :
+    streak >= 30 ? 'You completed the entire plan!' : `${streakPct}% of the journey complete — keep going!`;
+  document.getElementById('streakDate').textContent = new Date().toLocaleDateString('en-US', {weekday:'long', month:'long', day:'numeric', year:'numeric'});
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 1500);
+}
+
+// Toolbar events
+document.getElementById('searchInput').addEventListener('input', () => renderDays());
+document.getElementById('expandAllBtn').addEventListener('click', () => {
+  document.querySelectorAll('.day-card').forEach(c => { c.classList.add('open'); state[`open_${c.dataset.day}`] = true; });
+  saveState();
+});
+document.getElementById('collapseAllBtn').addEventListener('click', () => {
+  document.querySelectorAll('.day-card').forEach(c => { c.classList.remove('open'); state[`open_${c.dataset.day}`] = false; });
+  saveState();
+});
+document.getElementById('resetBtn').addEventListener('click', () => {
+  if (confirm('Reset ALL progress? This cannot be undone.')) {
+    state = { checked: {}, notes: {} };
+    saveState();
+    render();
+    showToast('Progress reset');
+  }
+});
+document.getElementById('exportBtn').addEventListener('click', () => {
+  const blob = new Blob([JSON.stringify(state, null, 2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `google_prep_progress_${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  showToast('Progress exported!');
+});
+
+// Import button
+document.getElementById('importBtn').addEventListener('click', () => {
+  document.getElementById('importFile').click();
+});
+document.getElementById('importFile').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    try {
+      const imported = JSON.parse(ev.target.result);
+      if (imported && imported.checked) {
+        state = imported;
+        saveState();
+        render();
+        showToast('Progress imported successfully!');
+      } else {
+        alert('Invalid file format. Expected a JSON file exported from this tracker.');
+      }
+    } catch { alert('Could not parse file. Make sure it\'s a valid JSON export.'); }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+});
+
+// File:// warning
+document.getElementById('serverCmd').addEventListener('click', () => {
+  navigator.clipboard.writeText('cd "' + location.href.replace('file://','').replace('/tracker.html','') + '" && python3 -m http.server 3000').then(() => showToast('Command copied!')).catch(() => {});
+});
+document.getElementById('dismissWarning').addEventListener('click', () => {
+  document.getElementById('fileWarning').style.display = 'none';
+  try { localStorage.setItem('dismiss_file_warn', '1'); } catch {}
+});
+
+// Init (async — wait for IndexedDB)
+(async () => {
+  state = await loadState();
+  render();
+  // Show file:// warning if needed
+  if (location.protocol === 'file:') {
+    const dismissed = localStorage.getItem('dismiss_file_warn');
+    if (!dismissed) document.getElementById('fileWarning').style.display = 'flex';
+  }
+})();
+</script>
+</body>
+</html>
