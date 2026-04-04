@@ -1,6 +1,4 @@
-# Google Interview Preparation
 
-A structured, hands-on preparation repository for Google software engineering interviews, covering DSA, concurrency, and system design — all in executable Jupyter notebooks.
 
 ## Repository Structure
 
